@@ -1,0 +1,795 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using GRP_03_27.Models
+@inject UserManager<User> UserManager
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Fridge Management</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999"></div>
+
+    <style>
+        :root {
+            --sidebar-bg: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            --sidebar-text: #ffffff;
+            --sidebar-hover: rgba(255, 255, 255, 0.1);
+            --sidebar-active: rgba(255, 255, 255, 0.2);
+            --accent-color: #ffd700;
+            --content-bg: #f8fafc;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--content-bg);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .content-wrapper {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Premium Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+            /* Animated Background */
+            .sidebar::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+                opacity: 0.3;
+                z-index: -1;
+            }
+
+        .sidebar-header {
+            text-align: center;
+            padding: 2rem 1.5rem 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ff6b6b);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            border: 3px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .user-avatar::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+                transform: rotate(45deg);
+                animation: shine 3s infinite;
+            }
+
+        @@keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        .user-info h4 {
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-role {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+            display: inline-block;
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar-nav {
+            padding: 1.5rem 1rem;
+            flex-grow: 1;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 0.75rem;
+            padding: 0 1rem;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 12px 1rem;
+            margin: 4px 0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            font-weight: 500;
+        }
+
+            .nav-link::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 3px;
+                background: var(--accent-color);
+                transform: scaleY(0);
+                transition: transform 0.3s ease;
+            }
+
+            .nav-link:hover {
+                background: var(--sidebar-hover);
+                color: white;
+                transform: translateX(5px);
+            }
+
+                .nav-link:hover::before {
+                    transform: scaleY(1);
+                }
+
+            .nav-link.active {
+                background: var(--sidebar-active);
+                color: white;
+            }
+
+                .nav-link.active::before {
+                    transform: scaleY(1);
+                }
+
+            .nav-link i {
+                margin-right: 12px;
+                font-size: 1.1rem;
+                width: 20px;
+                text-align: center;
+            }
+
+        .nav-badge {
+            background: var(--accent-color);
+            color: #2c3e50;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .nav-dropdown {
+            background: transparent;
+            border: none;
+            color: inherit;
+            text-align: left;
+            width: 100%;
+        }
+
+        .nav-collapse {
+            margin-left: 2rem;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            padding-left: 0.5rem;
+        }
+
+            .nav-collapse .nav-link {
+                padding: 8px 1rem;
+                font-size: 0.9rem;
+                border-radius: 8px;
+            }
+
+        .logout-section {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            width: 100%;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+        }
+
+            .btn-logout:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            }
+
+        /* Main Content Area */
+        .content {
+            flex-grow: 1;
+            padding: 2rem;
+            background: var(--content-bg);
+            position: relative;
+        }
+
+        .content-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        /* Mobile Toggle Button */
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--sidebar-bg);
+            border: none;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            z-index: 1100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+            .toggle-btn:hover {
+                transform: scale(1.1);
+            }
+
+        /* Role-specific accent colors */
+        .role-admin {
+            --accent-color: #ff6b6b;
+        }
+
+        .role-technician {
+            --accent-color: #4ecdc4;
+        }
+
+        .role-maintenance {
+            --accent-color: #45b7d1;
+        }
+
+        .role-customer {
+            --accent-color: #96ceb4;
+        }
+
+        .role-customerliaison {
+            --accent-color: #feca57;
+        }
+
+        .role-inventoryliaison {
+            --accent-color: #ff9ff3;
+        }
+
+        .role-purchasing {
+            --accent-color: #a8e6cf;
+        }
+
+        /* Mobile Responsive */
+        @@media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                height: 100%;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1050;
+            }
+
+                .sidebar.active {
+                    left: 0;
+                }
+
+            .content {
+                padding: 1rem;
+                margin-left: 0;
+            }
+
+            .toggle-btn {
+                display: flex;
+            }
+
+            .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1040;
+                display: none;
+            }
+
+                .overlay.active {
+                    display: block;
+                }
+        }
+
+        /* Desktop enhancements */
+        @@media (min-width: 769px) {
+            .toggle-btn {
+                display: none;
+            }
+        }
+
+        /* Smooth animations */
+        .nav-link, .btn-logout, .user-avatar {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Scrollbar styling */
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <!-- Mobile Toggle Button -->
+        <button class="toggle-btn d-md-none">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Mobile Overlay -->
+        <div class="overlay d-md-none"></div>
+
+        <div class="content-wrapper">
+            <!-- Premium Sidebar -->
+            <div class="sidebar @GetRoleClass()">
+                <div class="sidebar-header">
+                    <div class="user-avatar">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div class="user-info">
+                        @{
+                            var fullName = User?.FindFirst("FullName")?.Value ?? User.Identity.Name;
+                            var roleClass = GetRoleClass().Replace("role-", "");
+                        }
+                        <h4>@fullName</h4>
+                        <div class="user-role">
+                            <i class="bi bi-@GetRoleIcon() me-1"></i>@GetRoleTitle()
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar-nav">
+                    <!-- Administrator -->
+                    @if (User.IsInRole("Administrator"))
+                    {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="Admin" asp-action="Dashboard">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Dashboard</span>
+                                <span class="nav-badge">Admin</span>
+                        </a>
+                    </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Management</div>
+                            <a class="nav-link" asp-controller="AdminCustomers" asp-action="Index">
+                                <i class="bi bi-people"></i>
+                                <span>Customer Management</span>
+                            </a>
+                            <a class="nav-link" asp-controller="AdminSuppliers" asp-action="Index">
+                                <i class="bi bi-truck"></i>
+                                <span>Supplier Management</span>
+                            </a>
+                            <a class="nav-link" asp-controller="AdminLocations" asp-action="Index">
+                                <i class="bi bi-geo-alt"></i>
+                                <span>Location Management</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Fridges" asp-action="Index">
+                                <i class="bi bi-refrigerator"></i>
+                                <span>Fridge Management</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">System</div>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Users">
+                                <i class="bi bi-people-gear"></i>
+                                <span>User Management</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="Roles">
+                                <i class="bi bi-shield-check"></i>
+                                <span>Role Management</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Admin" asp-action="SystemHealth">
+                                <i class="bi bi-heart-pulse"></i>
+                                <span>System Health</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Customer Liaison -->
+                            @if (User.IsInRole("CustomerLiaison"))
+                            {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="Customers" asp-action="Dashboard">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Dashboard</span>
+                                <span class="nav-badge">Liaison</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Customer Management</div>
+                            <a class="nav-link" asp-controller="Customers" asp-action="Index">
+                                <i class="bi bi-people"></i>
+                                <span>All Customers</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customers" asp-action="Details">
+                                <i class="bi bi-person-lines-fill"></i>
+                                <span>Customer Details</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customers" asp-action="ManageFridges">
+                                <i class="bi bi-hdd-stack"></i>
+                                <span>Manage Allocations</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customers" asp-action="AllocationHistory">
+                                <i class="bi bi-clock-history"></i>
+                                <span>Allocation History</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Inventory Liaison -->
+                            @if (User.IsInRole("InventoryLiaison"))
+                            {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="Fridges" asp-action="InventoryReport">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Inventory Dashboard</span>
+                                <span class="nav-badge">Inventory</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Inventory Management</div>
+                            <a class="nav-link" asp-controller="Fridges" asp-action="Index">
+                                <i class="bi bi-list-ul"></i>
+                                <span>View All Fridges</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Fridges" asp-action="ReceiveNew">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Receive New Fridges</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Fridges" asp-action="Allocate">
+                                <i class="bi bi-arrow-right-circle"></i>
+                                <span>Allocate Fridge</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Fridges" asp-action="Scrap">
+                                <i class="bi bi-trash"></i>
+                                <span>Scrap Fridge</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Fault Technician -->
+                            @if (User.IsInRole("FaultTechnician"))
+                            {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="FaultReports" asp-action="Dashboard">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Fault Dashboard</span>
+                                <span class="nav-badge">Technician</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Fault Management</div>
+                            <a class="nav-link" asp-controller="FaultReports" asp-action="Index">
+                                <i class="bi bi-exclamation-circle"></i>
+                                <span>All Fault Reports</span>
+                            </a>
+                            <a class="nav-link" asp-controller="FaultReports" asp-action="MyAssigned">
+                                <i class="bi bi-person-check"></i>
+                                <span>My Assigned Reports</span>
+                            </a>
+                            <a class="nav-link" asp-controller="FaultReports" asp-action="Diagnose">
+                                <i class="bi bi-search"></i>
+                                <span>Diagnose Issues</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Maintenance Technician -->
+                            @if (User.IsInRole("MaintenanceTechnician"))
+                            {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="Maintenance" asp-action="Dashboard">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Maintenance Dashboard</span>
+                                <span class="nav-badge">Maintenance</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Maintenance Operations</div>
+                            <a class="nav-link" asp-controller="Maintenance" asp-action="Index">
+                                <i class="bi bi-list-ul"></i>
+                                <span>All Maintenance Records</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Maintenance" asp-action="Schedule">
+                                <i class="bi bi-calendar-plus"></i>
+                                <span>Schedule Maintenance</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Maintenance" asp-action="Details">
+                                <i class="bi bi-info-circle"></i>
+                                <span>Maintenance Details</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Maintenance" asp-action="Complete">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Complete Maintenance</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Purchasing Manager -->
+                    @if (User.IsInRole("PurchasingManager"))
+                    {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="PurchaseRequests" asp-action="Index">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>Purchase Dashboard</span>
+                                <span class="nav-badge">Purchasing</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Purchase Management</div>
+                            <a class="nav-link" asp-controller="PurchaseRequests" asp-action="Index">
+                                <i class="bi bi-list-ul"></i>
+                                <span>All Purchase Requests</span>
+                            </a>
+                            <a class="nav-link" asp-controller="PurchaseRequests" asp-action="Create">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Create Purchase Request</span>
+                            </a>
+                            <a class="nav-link" asp-controller="PurchaseRequests" asp-action="Approve">
+                                <i class="bi bi-check-circle"></i>
+                                <span>Approve Requests</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Customer -->
+                    @if (User.IsInRole("Customer"))
+                    {
+                        <div class="nav-section">
+                            <div class="nav-section-title">Main Navigation</div>
+                            <a class="nav-link active" asp-controller="Customer" asp-action="Dashboard">
+                                <i class="bi bi-speedometer2"></i>
+                                <span>My Dashboard</span>
+                                <span class="nav-badge">Customer</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">My Services</div>
+                            <a class="nav-link" asp-controller="Customer" asp-action="MyFridges">
+                                <i class="bi bi-refrigerator"></i>
+                                <span>My Fridges</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customer" asp-action="ReportFault">
+                                <i class="bi bi-exclamation-triangle"></i>
+                                <span>Report Fault</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customer" asp-action="MyFaultReports">
+                                <i class="bi bi-list-ul"></i>
+                                <span>My Fault Reports</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customer" asp-action="RequestNewFridge">
+                                <i class="bi bi-plus-circle"></i>
+                                <span>Request New Fridge</span>
+                            </a>
+                        </div>
+
+                        <div class="nav-section">
+                            <div class="nav-section-title">Account</div>
+                            <a class="nav-link" asp-controller="Customer" asp-action="Profile">
+                                <i class="bi bi-person-gear"></i>
+                                <span>Edit Profile</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customer" asp-action="MaintenanceHistory">
+                                <i class="bi bi-clock-history"></i>
+                                <span>Maintenance History</span>
+                            </a>
+                            <a class="nav-link" asp-controller="Customer" asp-action="UpcomingMaintenance">
+                                <i class="bi bi-calendar-check"></i>
+                                <span>Upcoming Maintenance</span>
+                            </a>
+                        </div>
+                    }
+
+                    <!-- Common Features -->
+                    <div class="nav-section">
+                        <div class="nav-section-title">Support</div>
+                        <a class="nav-link" asp-controller="Home" asp-action="About">
+                            <i class="bi bi-info-circle"></i>
+                            <span>About</span>
+                        </a>
+                                    </div>
+                                        </div>
+
+                <div class="logout-section">
+                    <form method="post" asp-controller="Account" asp-action="Logout">
+                        <button type="submit" class="btn-logout">
+                            <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                            </button>
+                                        </form>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content">
+                @RenderBody()
+                        </div>
+                </div>
+            }
+    else
+    {
+        <!-- Public Content (Login, Register, etc.) -->
+        <div class="content">
+            @RenderBody()
+                </div>
+            }
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Mobile sidebar toggle
+            $('.toggle-btn').click(function () {
+                $('.sidebar').toggleClass('active');
+                $('.overlay').toggleClass('active');
+            });
+
+            // Close sidebar when clicking overlay
+            $('.overlay').click(function () {
+                $('.sidebar').removeClass('active');
+                $('.overlay').removeClass('active');
+            });
+
+            // Add active class to current page
+            $('.nav-link').each(function () {
+                if (this.href === window.location.href) {
+                    $(this).addClass('active');
+                }
+            });
+
+            // Smooth animations
+            $('.nav-link').hover(
+                function () {
+                    $(this).css('transform', 'translateX(5px)');
+                },
+                function () {
+                    $(this).css('transform', 'translateX(0)');
+                }
+            );
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+
+@functions {
+            public string GetRoleClass()
+            {
+                if (User.IsInRole("Administrator")) return "role-admin";
+                if (User.IsInRole("FaultTechnician")) return "role-technician";
+                if (User.IsInRole("MaintenanceTechnician")) return "role-maintenance";
+                if (User.IsInRole("Customer")) return "role-customer";
+                if (User.IsInRole("CustomerLiaison")) return "role-customerliaison";
+                if (User.IsInRole("InventoryLiaison")) return "role-inventoryliaison";
+                if (User.IsInRole("PurchasingManager")) return "role-purchasing";
+                return "role-default";
+            }
+
+            public string GetRoleTitle()
+            {
+                if (User.IsInRole("Administrator")) return "System Administrator";
+                if (User.IsInRole("FaultTechnician")) return "Fault Technician";
+                if (User.IsInRole("MaintenanceTechnician")) return "Maintenance Technician";
+                if (User.IsInRole("Customer")) return "Customer";
+                if (User.IsInRole("CustomerLiaison")) return "Customer Liaison";
+                if (User.IsInRole("InventoryLiaison")) return "Inventory Liaison";
+                if (User.IsInRole("PurchasingManager")) return "Purchasing Manager";
+                return "User";
+            }
+
+            public string GetRoleIcon()
+            {
+                if (User.IsInRole("Administrator")) return "shield-check";
+                if (User.IsInRole("FaultTechnician")) return "tools";
+                if (User.IsInRole("MaintenanceTechnician")) return "gear";
+                if (User.IsInRole("Customer")) return "person";
+                if (User.IsInRole("CustomerLiaison")) return "telephone";
+                if (User.IsInRole("InventoryLiaison")) return "box-seam";
+                if (User.IsInRole("PurchasingManager")) return "cart-check";
+                return "person";
+            }
+
+            public string GetController()
+            {
+                if (User.IsInRole("Administrator")) return "Admin";
+                if (User.IsInRole("FaultTechnician")) return "FaultReports";
+                if (User.IsInRole("MaintenanceTechnician")) return "Maintenance";
+                if (User.IsInRole("Customer")) return "Customer";
+                if (User.IsInRole("CustomerLiaison")) return "Customers";
+                if (User.IsInRole("InventoryLiaison")) return "Fridges";
+                if (User.IsInRole("PurchasingManager")) return "PurchaseRequests";
+                return "Home";
+            }
+        }

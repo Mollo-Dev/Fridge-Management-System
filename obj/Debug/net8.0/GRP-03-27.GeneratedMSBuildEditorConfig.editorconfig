@@ -1,0 +1,329 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = GRP_03_27
+build_property.RootNamespace = GRP_03_27
+build_property.ProjectDir = C:\Users\mollo\OneDrive\Documents\ONT3010 Project\GRP-03-27 (4)\GRP-03-27\GRP-03-27\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\mollo\OneDrive\Documents\ONT3010 Project\GRP-03-27 (4)\GRP-03-27\GRP-03-27
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Account/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Account/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Account/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZWdpc3Rlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Account/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Account/VerifyEmail.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWNjb3VudFxWZXJpZnlFbWFpbC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminCustomers/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5DdXN0b21lcnNcQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminCustomers/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5DdXN0b21lcnNcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminCustomers/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5DdXN0b21lcnNcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminCustomers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5DdXN0b21lcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminCustomers/ToggleStatus.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5DdXN0b21lcnNcVG9nZ2xlU3RhdHVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminLocations/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5Mb2NhdGlvbnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/AdminSuppliers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5TdXBwbGllcnNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/AuditLogs.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQXVkaXRMb2dzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/Backup.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQmFja3VwLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/Reports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUmVwb3J0cy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/Roles.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cUm9sZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/SystemHealth.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU3lzdGVtSGVhbHRoLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Admin/Users.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlcnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/CustomerNotification/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJOb3RpZmljYXRpb25cRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customers/AllocationHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXEFsbG9jYXRpb25IaXN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customers/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXERhc2hib2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customers/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customers/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customers/ManageFridges.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJzXE1hbmFnZUZyaWRnZXMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/CreateProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcQ3JlYXRlUHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcRGFzaGJvYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/DeactivateAccount.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcRGVhY3RpdmF0ZUFjY291bnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/FaultReportDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcRmF1bHRSZXBvcnREZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/FridgeDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcRnJpZGdlRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/MaintenanceHistory.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcTWFpbnRlbmFuY2VIaXN0b3J5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/MyFaultReports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcTXlGYXVsdFJlcG9ydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/MyFridges.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcTXlGcmlkZ2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcUHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/ReportFault.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcUmVwb3J0RmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/RequestNewFridge.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcUmVxdWVzdE5ld0ZyaWRnZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Customer/UpcomingMaintenance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3VzdG9tZXJcVXBjb21pbmdNYWludGVuYW5jZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXERhc2hib2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/Diagnose.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXERpYWdub3NlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/MyAssigned.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXE15QXNzaWduZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/FaultReports/Update.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRmF1bHRSZXBvcnRzXFVwZGF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/Allocate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xBbGxvY2F0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/InventoryReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xJbnZlbnRvcnlSZXBvcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/ReceiveNew.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xSZWNlaXZlTmV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/ReceiveNewForm.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xSZWNlaXZlTmV3Rm9ybS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/RecieveNew.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xSZWNpZXZlTmV3LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Fridges/Scrap.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZGdlc1xTY3JhcC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Home/About.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBYm91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Maintenance/Complete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VcQ29tcGxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Maintenance/Dashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VcRGFzaGJvYXJkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Maintenance/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VcRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Maintenance/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VcRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Maintenance/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Maintenance/Schedule.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFpbnRlbmFuY2VcU2NoZWR1bGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/PurchaseRequests/Approve.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0c1xBcHByb3ZlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/PurchaseRequests/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0c1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/PurchaseRequests/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHVyY2hhc2VSZXF1ZXN0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/Components/Notification/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTm90aWZpY2F0aW9uXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_AdminLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_AuthLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRoTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_CustomerLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9DdXN0b21lckxheW91dC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_HomeLayout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Ib21lTGF5b3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_LoginPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Mb2dpblBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/mollo/OneDrive/Documents/ONT3010 Project/GRP-03-27 (4)/GRP-03-27/GRP-03-27/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-b70dbk8wi6

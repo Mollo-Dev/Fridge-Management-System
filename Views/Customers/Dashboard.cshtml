@@ -1,0 +1,560 @@
+@using GRP_03_27.Enums;
+@{
+    ViewData["Title"] = "Customer Management Dashboard";
+}
+
+<style>
+    .action-card {
+        transition: all 0.3s ease-in-out;
+        border: 2px solid transparent;
+    }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--bs-primary);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        }
+
+    .activity-feed {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .activity-item {
+        border-left: 3px solid var(--bs-primary);
+        padding-left: 1rem;
+        margin-bottom: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .activity-item:hover {
+            background-color: rgba(0, 123, 255, 0.05);
+            border-left-color: var(--bs-success);
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    .bg-gradient-success {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    }
+
+    .bg-gradient-info {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+    }
+
+    .bg-gradient-warning {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+    }
+
+    .rounded-top-3 {
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+    }
+
+    .fs-7 {
+        font-size: 0.875rem;
+    }
+
+    /* Fixed chart container to prevent movement */
+    .chart-container {
+        position: relative;
+        height: 300px;
+        min-height: 300px;
+    }
+
+    .chart-pie {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+</style>
+
+<!-- Enhanced Header Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="display-6 fw-bold text-primary mb-2">
+                    <i class="fas fa-tachometer-alt me-3"></i>Customer Management Dashboard
+                </h1>
+                <p class="text-muted mb-0 fs-6">
+                    <i class="fas fa-chart-line me-1"></i>Real-time insights and analytics for customer management
+                </p>
+            </div>
+            <div class="d-none d-md-block">
+                <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25 fs-7">
+                    <i class="fas fa-sync-alt me-1"></i>Live Data
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Key Metrics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-lg h-100 rounded-3 bg-gradient-primary text-white">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-semibold text-white-50 text-uppercase mb-1">
+                            Total Customers
+                        </div>
+                        <div class="h2 mb-0 fw-bold" id="totalCustomers">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-lg h-100 rounded-3 bg-gradient-success text-white">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-semibold text-white-50 text-uppercase mb-1">
+                            Active Customers
+                        </div>
+                        <div class="h2 mb-0 fw-bold" id="activeCustomers">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-user-check fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-lg h-100 rounded-3 bg-gradient-info text-white">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-semibold text-white-50 text-uppercase mb-1">
+                            Total Fridges
+                        </div>
+                        <div class="h2 mb-0 fw-bold" id="totalFridges">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-refrigerator fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-0 shadow-lg h-100 rounded-3 bg-gradient-warning text-white">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs fw-semibold text-white-50 text-uppercase mb-1">
+                            Available Fridges
+                        </div>
+                        <div class="h2 mb-0 fw-bold" id="availableFridges">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-box fa-2x text-white-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Enhanced Customer Distribution Chart - Fixed Position -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow-lg border-0 rounded-3 h-100">
+            <div class="card-header bg-light py-3 rounded-top-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-chart-pie me-2"></i>Customer Distribution by Type
+                    </h6>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="chart-container">
+                    <canvas id="customerTypeChart"></canvas>
+                </div>
+                <div class="text-center mt-3" id="chartLegend"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Recent Activity -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow-lg border-0 rounded-3 h-100">
+            <div class="card-header bg-light py-3 rounded-top-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 fw-bold text-primary">
+                        <i class="fas fa-history me-2"></i>Recent Allocations
+                    </h6>
+                    <button class="btn btn-sm btn-outline-primary" onclick="loadRecentAllocations()"
+                            title="Refresh" data-bs-toggle="tooltip">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="recentAllocations" class="activity-feed">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="text-muted mt-2 mb-0">Loading recent activity...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Quick Actions - Removed Add Customer for Customer Liaison -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header bg-light py-3 rounded-top-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-xl-4 col-md-6">
+                        <a asp-controller="Customers" asp-action="Index" class="card action-card h-100 text-decoration-none">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-info bg-opacity-10 rounded-circle p-3 d-inline-flex mb-3">
+                                    <i class="fas fa-users fa-2x text-info"></i>
+                                </div>
+                                <h6 class="fw-semibold text-dark mb-2">Manage Customers</h6>
+                                <p class="text-muted small mb-0">View and manage all customers</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <a asp-controller="Fridges" asp-action="Index" class="card action-card h-100 text-decoration-none">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-3 d-inline-flex mb-3">
+                                    <i class="fas fa-refrigerator fa-2x text-success"></i>
+                                </div>
+                                <h6 class="fw-semibold text-dark mb-2">Manage Fridges</h6>
+                                <p class="text-muted small mb-0">Inventory management</p>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <a asp-controller="PurchaseRequests" asp-action="Index" class="card action-card h-100 text-decoration-none">
+                            <div class="card-body text-center p-4">
+                                <div class="bg-warning bg-opacity-10 rounded-circle p-3 d-inline-flex mb-3">
+                                    <i class="fas fa-shopping-cart fa-2x text-warning"></i>
+                                </div>
+                                <h6 class="fw-semibold text-dark mb-2">Purchase Requests</h6>
+                                <p class="text-muted small mb-0">View stock requests</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Inventory Status -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header bg-light py-3 rounded-top-3">
+                <h6 class="m-0 fw-bold text-primary">
+                    <i class="fas fa-boxes me-2"></i>Inventory Status Overview
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3" id="inventoryStatus">
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-success text-white border-0 shadow-sm h-100">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-check-circle fa-3x mb-3 text-white-50"></i>
+                                <h5 class="card-title fw-semibold">Available</h5>
+                                <h2 class="fw-bold mb-0" id="availableCount">-</h2>
+                                <small class="opacity-75">Ready for allocation</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-primary text-white border-0 shadow-sm h-100">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-truck-loading fa-3x mb-3 text-white-50"></i>
+                                <h5 class="card-title fw-semibold">Allocated</h5>
+                                <h2 class="fw-bold mb-0" id="allocatedCount">-</h2>
+                                <small class="opacity-75">With customers</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-warning text-white border-0 shadow-sm h-100">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-tools fa-3x mb-3 text-white-50"></i>
+                                <h5 class="card-title fw-semibold">Maintenance</h5>
+                                <h2 class="fw-bold mb-0" id="maintenanceCount">-</h2>
+                                <small class="opacity-75">Under service</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6">
+                        <div class="card bg-danger text-white border-0 shadow-sm h-100">
+                            <div class="card-body text-center p-4">
+                                <i class="fas fa-exclamation-triangle fa-3x mb-3 text-white-50"></i>
+                                <h5 class="card-title fw-semibold">Faulty</h5>
+                                <h2 class="fw-bold mb-0" id="faultyCount">-</h2>
+                                <small class="opacity-75">Requires attention</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let customerTypeChart;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        loadDashboardData();
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadDashboardData, 30000);
+    });
+
+    function loadDashboardData() {
+        // Load metrics with enhanced loading states
+        showLoadingStates();
+
+        fetch('/Customers/DashboardMetrics')
+            .then(response => response.json())
+            .then(data => {
+                updateMetrics(data);
+                updateInventoryStatus(data);
+                createCustomerTypeChart(data.customerTypes);
+            })
+            .catch(error => {
+                console.error('Error loading dashboard data:', error);
+                showErrorStates();
+            });
+
+        loadRecentAllocations();
+    }
+
+    function showLoadingStates() {
+        document.getElementById('totalCustomers').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        document.getElementById('activeCustomers').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        document.getElementById('totalFridges').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        document.getElementById('availableFridges').innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    }
+
+    function showErrorStates() {
+        document.getElementById('totalCustomers').innerHTML = '<i class="fas fa-exclamation-triangle text-warning"></i>';
+        document.getElementById('activeCustomers').innerHTML = '<i class="fas fa-exclamation-triangle text-warning"></i>';
+        document.getElementById('totalFridges').innerHTML = '<i class="fas fa-exclamation-triangle text-warning"></i>';
+        document.getElementById('availableFridges').innerHTML = '<i class="fas fa-exclamation-triangle text-warning"></i>';
+    }
+
+    function updateMetrics(data) {
+        document.getElementById('totalCustomers').textContent = data.totalCustomers;
+        document.getElementById('activeCustomers').textContent = data.activeCustomers;
+        document.getElementById('totalFridges').textContent = data.totalFridges;
+        document.getElementById('availableFridges').textContent = data.availableFridges;
+    }
+
+    function updateInventoryStatus(data) {
+        document.getElementById('availableCount').textContent = data.inventoryStatus.available;
+        document.getElementById('allocatedCount').textContent = data.inventoryStatus.allocated;
+        document.getElementById('maintenanceCount').textContent = data.inventoryStatus.underMaintenance;
+        document.getElementById('faultyCount').textContent = data.inventoryStatus.faulty;
+    }
+
+    function loadRecentAllocations() {
+        fetch('/Customers/RecentAllocations')
+            .then(response => response.json())
+            .then(data => {
+                let html = '';
+                if (data.length > 0) {
+                    data.forEach(function(item, index) {
+                        html += `
+                            <div class="activity-item ${index < data.length - 1 ? 'border-bottom pb-3' : ''}">
+                                <div class="d-flex align-items-start">
+                                    <div class="flex-shrink-0">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle p-2">
+                                            <i class="fas fa-refrigerator text-primary fs-6"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <h6 class="fw-semibold mb-1 text-dark">${item.description}</h6>
+                                            <small class="text-muted">${item.actionDate}</small>
+                                        </div>
+                                        <p class="mb-1 text-muted">
+                                            <i class="fas fa-refrigerator me-1"></i>${item.fridgeModel}
+                                            <i class="fas fa-building ms-2 me-1"></i>${item.customerName}
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="fas fa-user me-1"></i>By ${item.actionBy}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = `
+                        <div class="text-center py-4">
+                            <i class="fas fa-history fa-3x text-muted opacity-50 mb-3"></i>
+                            <h6 class="text-muted fw-semibold">No Recent Activity</h6>
+                            <p class="text-muted small">Allocation activities will appear here</p>
+                        </div>
+                    `;
+                }
+                document.getElementById('recentAllocations').innerHTML = html;
+            })
+            .catch(error => {
+                console.error('Error loading recent allocations:', error);
+                document.getElementById('recentAllocations').innerHTML = `
+                    <div class="text-center py-4">
+                        <i class="fas fa-exclamation-triangle fa-3x text-danger opacity-50 mb-3"></i>
+                        <h6 class="text-danger fw-semibold">Error Loading Data</h6>
+                        <p class="text-muted small">Please try refreshing the page</p>
+                    </div>
+                `;
+            });
+    }
+
+    function createCustomerTypeChart(customerTypes) {
+        var ctx = document.getElementById("customerTypeChart").getContext('2d');
+
+        if (customerTypeChart) {
+            customerTypeChart.destroy();
+        }
+
+        customerTypeChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: customerTypes.map(function(item) { return item.type; }),
+                datasets: [{
+                    data: customerTypes.map(function(item) { return item.count; }),
+                    backgroundColor: [
+                        '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b',
+                        '#858796', '#5a5c69', '#6f42c1', '#e83e8c', '#fd7e14'
+                    ],
+                    hoverBackgroundColor: [
+                        '#2e59d9', '#17a673', '#2c9faf', '#dda20a', '#e02d1b',
+                        '#6b6d7c', '#464752', '#59359e', '#d91a6b', '#e46706'
+                    ],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                    borderWidth: 2
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                cutout: '65%',
+                // DISABLED ANIMATIONS AND MOVEMENT
+                animation: {
+                    duration: 0 // No animation
+                },
+                transitions: {
+                    active: {
+                        animation: {
+                            duration: 0
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 0,
+                        bottom: 0,
+                        left: 0,
+                        right: 0
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyFontColor: "#858796",
+                        borderColor: '#dddfeb',
+                        borderWidth: 1,
+                        displayColors: true,
+                        caretPadding: 10,
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.label || '';
+                                const value = context.parsed;
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = Math.round((value / total) * 100);
+                                return `${label}: ${value} (${percentage}%)`;
+                            }
+                        }
+                    }
+                }
+            },
+        });
+
+        // Update legend with automatic percentages
+        updateChartLegend(customerTypes);
+    }
+
+    function updateChartLegend(customerTypes) {
+        const total = customerTypes.reduce((sum, item) => sum + item.count, 0);
+        let legendHtml = '<div class="row g-2 justify-content-center">';
+
+        customerTypes.forEach((item, index) => {
+            const percentage = total > 0 ? Math.round((item.count / total) * 100) : 0;
+            const colors = ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'];
+
+            legendHtml += `
+                <div class="col-12 col-sm-6">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge me-2" style="background-color: ${colors[index % colors.length]}; width: 12px; height: 12px; border-radius: 2px;"></span>
+                        <div class="flex-grow-1">
+                            <small class="text-muted">
+                                <span class="fw-semibold text-dark">${item.type}</span>
+                                <div>
+                                    <span class="text-dark fw-bold">${item.count}</span>
+                                    <small class="text-muted ms-1">(${percentage}%)</small>
+                                </div>
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+
+        legendHtml += '</div>';
+        document.getElementById('chartLegend').innerHTML = legendHtml;
+    }
+</script>

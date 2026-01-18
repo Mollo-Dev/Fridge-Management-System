@@ -1,0 +1,205 @@
+@using System.Linq
+@{
+    ViewData["Title"] = "Administration Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-primary">Administration Dashboard</h1>
+        <p class="lead text-muted">Manage your beverage storage solutions system</p>
+    </div>
+
+
+    <!-- Quick Actions -->
+    <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="AdminCustomers" asp-action="Index" class="dashboard-card card-customers text-decoration-none">
+                <i class="bi bi-people"></i>
+                <h4>Customer Management</h4>
+                <p>Manage customer accounts and information</p>
+                <button class="btn btn-dashboard">Manage Customers</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="AdminSuppliers" asp-action="Index" class="dashboard-card card-suppliers text-decoration-none">
+                <i class="bi bi-truck"></i>
+                <h4>Supplier Management</h4>
+                <p>Manage supplier relationships and inventory</p>
+                <button class="btn btn-dashboard">Manage Suppliers</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="AdminLocations" asp-action="Index" class="dashboard-card card-locations text-decoration-none">
+                <i class="bi bi-geo-alt"></i>
+                <h4>Location Management</h4>
+                <p>Manage physical locations and GPS coordinates</p>
+                <button class="btn btn-dashboard">Manage Locations</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="Fridges" asp-action="Index" class="dashboard-card card-fridges text-decoration-none">
+                <i class="bi bi-refrigerator"></i>
+                <h4>Fridge Management</h4>
+                <p>Manage fridge inventory and allocation</p>
+                <button class="btn btn-dashboard">Manage Fridges</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="Admin" asp-action="Users" class="dashboard-card card-technicians text-decoration-none">
+                <i class="bi bi-person-gear"></i>
+                <h4>User Management</h4>
+                <p>Manage employees and user accounts</p>
+                <button class="btn btn-dashboard">Manage Users</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="Maintenance" asp-action="Index" class="dashboard-card card-maintenance text-decoration-none">
+                <i class="bi bi-tools"></i>
+                <h4>Maintenance</h4>
+                <p>Schedule and manage maintenance operations</p>
+                <button class="btn btn-dashboard">Manage Maintenance</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="FaultReports" asp-action="Index" class="dashboard-card card-notifications text-decoration-none">
+                <i class="bi bi-exclamation-triangle"></i>
+                <h4>Fault Reports</h4>
+                <p>Monitor and manage fault reports</p>
+                <button class="btn btn-dashboard">View Faults</button>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <a asp-controller="Admin" asp-action="Reports" class="dashboard-card card-reports text-decoration-none">
+                <i class="bi bi-graph-up"></i>
+                <h4>Advanced Reports</h4>
+                <p>Generate comprehensive system reports</p>
+                <button class="btn btn-dashboard">View Reports</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- System Statistics -->
+    <div class="admin-stats">
+        <h3 class="mb-4 text-center">System Overview</h3>
+        <div class="row">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <h3>@Model.TotalCustomers</h3>
+                    <p>Total Customers</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <h3>@Model.TotalFridges</h3>
+                    <p>Total Fridges</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <h3>@Model.TotalSuppliers</h3>
+                    <p>Total Suppliers</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="stat-card">
+                    <h3>@Model.TotalUsers</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-people me-2"></i>Recent Customers</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentCustomers != null && Model.RecentCustomers.Count > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var customer in Model.RecentCustomers)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@customer.BusinessName</h6>
+                                        <small class="text-muted">@customer.ContactPerson</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">@customer.RegistrationDate.ToString("MMM dd")</small>
+                                        @if (customer.IsActive)
+                                        {
+                                            <span class="badge bg-success ms-2">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger ms-2">Inactive</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No recent customers</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Recent Fault Reports</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentFaultReports != null && Model.RecentFaultReports.Count > 0)
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var fault in Model.RecentFaultReports)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">@fault.Fridge?.Customer?.BusinessName</h6>
+                                        <small class="text-muted">@fault.Fridge?.Model</small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">@fault.DateReported.ToString("MMM dd")</small>
+                                        @if (fault.Priority == GRP_03_27.Enums.PriorityLevel.High)
+                                        {
+                                            <span class="badge bg-danger ms-2">High</span>
+                                        }
+                                        else if (fault.Priority == GRP_03_27.Enums.PriorityLevel.Medium)
+                                        {
+                                            <span class="badge bg-warning ms-2">Medium</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info ms-2">Low</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center">No recent fault reports</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

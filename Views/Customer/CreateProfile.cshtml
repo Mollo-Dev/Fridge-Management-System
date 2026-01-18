@@ -1,0 +1,571 @@
+﻿@model GRP_03_27.Models.ViewModels.CustomerProfileViewModel
+@using GRP_03_27.Enums
+
+@{
+    ViewData["Title"] = "Complete Your Business Profile";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Complete Your Business Profile
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Welcome to GRP Fridge Management System!</strong>
+                        Please complete your business profile to access all customer features including fault reporting, maintenance requests, and fridge management.
+                    </div>
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            @TempData["ErrorMessage"]
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    }
+
+                    <form asp-action="CreateProfile" method="post" id="profileForm">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        
+                        <!-- Hidden field for CustomerId -->
+                        <input asp-for="CustomerId" type="hidden" />
+
+                        <!-- Business Information Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-building me-2"></i>Business Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label asp-for="BusinessName" class="form-label fw-bold">Business Name *</label>
+                                    <input asp-for="BusinessName" class="form-control form-control-lg"
+                                           placeholder="Enter your registered business name" required />
+                                    <span asp-validation-for="BusinessName" class="text-danger small"></span>
+                                    <small class="form-text text-muted">This is the official name of your business as it appears on your registration documents.</small>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="BusinessType" class="form-label fw-bold">Business Type *</label>
+                                            <select asp-for="BusinessType" class="form-select form-select-lg"
+                                                    asp-items="Html.GetEnumSelectList<CustomerType>()" required>
+                                                <option value="">-- Select Business Type --</option>
+                                            </select>
+                                            <span asp-validation-for="BusinessType" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3" id="otherBusinessTypeGroup" style="display: none;">
+                                            <label asp-for="OtherBusinessType" class="form-label fw-bold">Specify Business Type *</label>
+                                            <input asp-for="OtherBusinessType" class="form-control form-control-lg"
+                                                   placeholder="Please specify your business type" />
+                                            <span asp-validation-for="OtherBusinessType" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-address-book me-2"></i>Contact Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label asp-for="ContactPerson" class="form-label fw-bold">Primary Contact Person *</label>
+                                    <input asp-for="ContactPerson" class="form-control form-control-lg"
+                                           placeholder="Enter the primary contact person's name" required />
+                                    <span asp-validation-for="ContactPerson" class="text-danger small"></span>
+                                    <small class="form-text text-muted">This should be the main person we can contact regarding your fridges and maintenance.</small>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="Email" class="form-label fw-bold">Email Address *</label>
+                                            <input asp-for="Email" type="email" class="form-control form-control-lg"
+                                                   placeholder="your@email.com" required />
+                                            <span asp-validation-for="Email" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-3">
+                                            <label asp-for="PhoneNumber" class="form-label fw-bold">Phone Number *</label>
+                                            <input asp-for="PhoneNumber" class="form-control form-control-lg"
+                                                   placeholder="+27 XXX XXX XXXX" required />
+                                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label asp-for="PhysicalAddress" class="form-label fw-bold">Business Physical Address *</label>
+                                    <div class="input-group">
+                                        <textarea asp-for="PhysicalAddress" id="PhysicalAddress" class="form-control" rows="4"
+                                                  placeholder="Enter your complete business address including street, city, and postal code" required></textarea>
+                                        <button type="button" class="btn btn-outline-secondary" id="autofillAddressBtn" title="Auto-fill address">
+                                            <i class="bi bi-geo-alt"></i>
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="PhysicalAddress" class="text-danger small"></span>
+                                    <small class="form-text text-muted">
+                                        This address will be used for service visits, maintenance, and deliveries.
+                                        Please ensure it's accurate and complete.
+                                    </small>
+                                    <div id="addressSuggestions" class="address-suggestions" style="display: none;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-success btn-lg px-5">
+                                <i class="fas fa-check-circle me-2"></i>Complete Profile & Continue
+                            </button>
+                            <a asp-action="Dashboard" asp-controller="Customer" class="btn btn-outline-secondary btn-lg px-4">
+                                <i class="bi bi-arrow-left me-2"></i>Cancel
+                            </a>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Your information is secure and will only be used for service delivery purposes.
+                            </small>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-header bg-info text-white">
+                    <h6 class="card-title mb-0">
+                        <i class="fas fa-question-circle me-2"></i>Need Help?
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-phone me-2"></i>Contact Support</h6>
+                            <p class="mb-1">Phone: +27 11 123 4567</p>
+                            <p class="mb-0">Email: support@grpfridges.co.za</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-clock me-2"></i>Support Hours</h6>
+                            <p class="mb-1">Monday - Friday: 8:00 AM - 5:00 PM</p>
+                            <p class="mb-0">Saturday: 9:00 AM - 1:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+        border: none;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+        border: 2px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+    .btn {
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .address-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .address-suggestion {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #f1f3f4;
+        transition: background-color 0.2s ease;
+    }
+
+    .address-suggestion:hover {
+        background-color: #f8f9fa;
+    }
+
+    .address-suggestion:last-child {
+        border-bottom: none;
+    }
+
+    .form-group {
+        position: relative;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Show/hide other business type field
+            function toggleOtherBusinessType() {
+                const businessType = document.getElementById('BusinessType');
+                const otherGroup = document.getElementById('otherBusinessTypeGroup');
+
+                if (businessType.value === '2') { // CustomerType.Other = 2
+                    otherGroup.style.display = 'block';
+                    // Make field required when visible
+                    const otherInput = document.getElementById('OtherBusinessType');
+                    otherInput.required = true;
+                } else {
+                    otherGroup.style.display = 'none';
+                    // Remove required when hidden and clear value
+                    const otherInput = document.getElementById('OtherBusinessType');
+                    otherInput.required = false;
+                    otherInput.value = '';
+                }
+            }
+
+            // Initialize on page load
+            toggleOtherBusinessType();
+
+            // Handle business type change
+            document.getElementById('BusinessType').addEventListener('change', toggleOtherBusinessType);
+
+            // Enhanced form validation
+            document.getElementById('profileForm').addEventListener('submit', function(e) {
+                const businessType = document.getElementById('BusinessType').value;
+                const otherBusinessType = document.getElementById('OtherBusinessType');
+
+                // Validate "Other" business type
+                if (businessType === '2' && (!otherBusinessType.value || otherBusinessType.value.trim() === '')) {
+                    e.preventDefault();
+                    showToast('Please specify your business type when selecting "Other".', 'warning');
+                    otherBusinessType.focus();
+                    return;
+                }
+
+                // Validate phone number format (basic South African format)
+                const phoneNumber = document.getElementById('PhoneNumber').value;
+                const saPhoneRegex = /^(\+27|0)[1-8][0-9]{8}$/;
+                if (phoneNumber && !saPhoneRegex.test(phoneNumber.replace(/\s/g, ''))) {
+                    e.preventDefault();
+                    showToast('Please enter a valid South African phone number (e.g., +27 XXX XXX XXXX or 0XX XXX XXXX).', 'warning');
+                    document.getElementById('PhoneNumber').focus();
+                    return;
+                }
+
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            });
+
+            // Auto-format phone number
+            document.getElementById('PhoneNumber').addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+
+                if (value.startsWith('27')) {
+                    value = '+' + value;
+                } else if (value.startsWith('0')) {
+                    value = value;
+                }
+
+                // Format the number
+                if (value.length <= 3) {
+                    e.target.value = value;
+                } else if (value.length <= 6) {
+                    e.target.value = value.replace(/(\d{3})(\d{0,3})/, '$1 $2');
+                } else if (value.length <= 9) {
+                    e.target.value = value.replace(/(\d{3})(\d{3})(\d{0,3})/, '$1 $2 $3');
+                } else {
+                    e.target.value = value.replace(/(\d{3})(\d{3})(\d{0,4})/, '$1 $2 $3');
+                }
+            });
+
+            // Toast notification function
+            function showToast(message, type = 'info') {
+                // Remove existing toasts
+                $('.toast').remove();
+
+                const toast = $(`
+                    <div class="toast align-items-center text-white bg-${type === 'warning' ? 'warning' : 'info'} border-0 position-fixed top-0 end-0 m-3" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <i class="fas ${type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'} me-2"></i>
+                                ${message}
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                        </div>
+                    </div>
+                `);
+
+                $('body').append(toast);
+                const bsToast = new bootstrap.Toast(toast[0]);
+                bsToast.show();
+            }
+
+            // Auto-populate contact person if empty
+            const contactPersonField = document.getElementById('ContactPerson');
+            if (!contactPersonField.value.trim()) {
+                // You could auto-populate from user claims if available
+                // For now, we'll leave it empty for the user to fill
+            }
+
+            // Add character counters
+            function setupCharacterCounters() {
+                const textareas = document.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    const maxLength = textarea.getAttribute('maxlength') || 500;
+                    const counter = document.createElement('small');
+                    counter.className = 'form-text text-muted character-counter';
+                    counter.innerHTML = `<span class="current">0</span> / ${maxLength} characters`;
+                    textarea.parentNode.appendChild(counter);
+
+                    textarea.addEventListener('input', function() {
+                        const current = this.value.length;
+                        counter.querySelector('.current').textContent = current;
+
+                        if (current > maxLength * 0.9) {
+                            counter.classList.add('text-warning');
+                        } else {
+                            counter.classList.remove('text-warning');
+                        }
+                    });
+
+                    // Trigger initial count
+                    textarea.dispatchEvent(new Event('input'));
+                });
+            }
+
+            setupCharacterCounters();
+
+            // Address autocomplete functionality
+            const addressInput = document.getElementById('PhysicalAddress');
+            const autofillBtn = document.getElementById('autofillAddressBtn');
+            const suggestionsDiv = document.getElementById('addressSuggestions');
+
+            if (addressInput && autofillBtn && suggestionsDiv) {
+                // Address autofill button click
+                autofillBtn.addEventListener('click', function() {
+                    if (navigator.geolocation) {
+                        autofillBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+                        autofillBtn.disabled = true;
+                        
+                        navigator.geolocation.getCurrentPosition(
+                            function(position) {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+                                
+                                fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.locality && data.city && data.countryName) {
+                                            const address = `${data.locality}, ${data.city}, ${data.countryName}`;
+                                            addressInput.value = address;
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Geocoding error:', error);
+                                        showToast('Unable to get address from location. Please enter manually.', 'warning');
+                                    })
+                                    .finally(() => {
+                                        autofillBtn.innerHTML = '<i class="bi bi-geo-alt"></i>';
+                                        autofillBtn.disabled = false;
+                                    });
+                            },
+                            function(error) {
+                                console.error('Geolocation error:', error);
+                                showToast('Unable to get your location. Please enter address manually.', 'warning');
+                                autofillBtn.innerHTML = '<i class="bi bi-geo-alt"></i>';
+                                autofillBtn.disabled = false;
+                            }
+                        );
+                    } else {
+                        showToast('Geolocation is not supported by this browser.', 'warning');
+                    }
+                });
+
+                // Enhanced address input suggestions with real-time autocomplete
+                let addressTimeout;
+                addressInput.addEventListener('input', function() {
+                    clearTimeout(addressTimeout);
+                    const query = this.value.trim();
+                    
+                    if (query.length > 2) {
+                        addressTimeout = setTimeout(() => {
+                            getAddressSuggestions(query);
+                        }, 300);
+                    } else {
+                        hideAddressSuggestions();
+                    }
+                });
+
+                function getAddressSuggestions(query) {
+                    // Use OpenStreetMap Nominatim API for live address suggestions
+                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', South Africa')}&limit=6&addressdetails=1&countrycodes=za`;
+                    
+                    fetch(nominatimUrl)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.length > 0) {
+                                const suggestions = data.map(result => {
+                                    const address = result.display_name;
+                                    return address;
+                                });
+                                showAddressSuggestions(suggestions);
+                            } else {
+                                // Fallback to static suggestions if API fails
+                                getFallbackSuggestions(query);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Geocoding API error:', error);
+                            // Fallback to static suggestions
+                            getFallbackSuggestions(query);
+                        });
+                }
+
+                function getFallbackSuggestions(query) {
+                    const suggestions = [];
+                    
+                    // Handle specific street addresses like "51 Admiralty"
+                    if (query.match(/^\d+\s+\w+/i)) {
+                        const streetMatch = query.match(/^(\d+)\s+(.+)/i);
+                        if (streetMatch) {
+                            const number = streetMatch[1];
+                            const street = streetMatch[2];
+                            
+                            suggestions.push(
+                                `${number} ${street}, Sandton, Johannesburg, South Africa`,
+                                `${number} ${street}, Rosebank, Johannesburg, South Africa`,
+                                `${number} ${street}, Sea Point, Cape Town, South Africa`,
+                                `${number} ${street}, Umhlanga, Durban, South Africa`,
+                                `${number} ${street}, Pretoria, South Africa`
+                            );
+                        }
+                    }
+                    
+                    // Johannesburg area suggestions
+                    if (query.toLowerCase().includes('johannesburg') || query.toLowerCase().includes('joburg') || 
+                        query.toLowerCase().includes('jhb') || query.toLowerCase().includes('gauteng') ||
+                        query.toLowerCase().includes('sandton') || query.toLowerCase().includes('rosebank')) {
+                        suggestions.push(
+                            'Sandton, Johannesburg, South Africa',
+                            'Rosebank, Johannesburg, South Africa',
+                            'Melville, Johannesburg, South Africa',
+                            'Randburg, Johannesburg, South Africa',
+                            'Midrand, Johannesburg, South Africa'
+                        );
+                    }
+                    
+                    // Cape Town area suggestions
+                    if (query.toLowerCase().includes('cape town') || query.toLowerCase().includes('capetown') || 
+                        query.toLowerCase().includes('western cape') || query.toLowerCase().includes('sea point') ||
+                        query.toLowerCase().includes('green point')) {
+                        suggestions.push(
+                            'Cape Town Central, Cape Town, South Africa',
+                            'Sea Point, Cape Town, South Africa',
+                            'Green Point, Cape Town, South Africa',
+                            'Claremont, Cape Town, South Africa',
+                            'Rondebosch, Cape Town, South Africa'
+                        );
+                    }
+                    
+                    // Durban area suggestions
+                    if (query.toLowerCase().includes('durban') || query.toLowerCase().includes('kwazulu') || 
+                        query.toLowerCase().includes('kzn') || query.toLowerCase().includes('umhlanga') ||
+                        query.toLowerCase().includes('berea')) {
+                        suggestions.push(
+                            'Durban Central, Durban, South Africa',
+                            'Umhlanga, Durban, South Africa',
+                            'Berea, Durban, South Africa',
+                            'Westville, Durban, South Africa',
+                            'Pinetown, Durban, South Africa'
+                        );
+                    }
+                    
+                    // Filter and limit suggestions
+                    const filteredSuggestions = suggestions
+                        .filter(suggestion => suggestion.toLowerCase().includes(query.toLowerCase()))
+                        .slice(0, 6);
+                    
+                    if (filteredSuggestions.length > 0) {
+                        showAddressSuggestions(filteredSuggestions);
+                    } else {
+                        hideAddressSuggestions();
+                    }
+                }
+
+                function showAddressSuggestions(suggestions) {
+                    suggestionsDiv.innerHTML = '';
+                    suggestions.forEach(suggestion => {
+                        const div = document.createElement('div');
+                        div.className = 'address-suggestion';
+                        div.textContent = suggestion;
+                        div.addEventListener('click', function() {
+                            addressInput.value = suggestion;
+                            hideAddressSuggestions();
+                        });
+                        suggestionsDiv.appendChild(div);
+                    });
+                    suggestionsDiv.style.display = 'block';
+                }
+
+                function hideAddressSuggestions() {
+                    suggestionsDiv.style.display = 'none';
+                }
+
+                // Hide suggestions when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!addressInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                        hideAddressSuggestions();
+                    }
+                });
+            }
+        });
+    </script>
+}

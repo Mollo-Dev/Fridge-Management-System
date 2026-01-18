@@ -1,0 +1,47 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+    background-color: #f2f2f2; /* Light gray background */
+}
+
+.card, .table {
+    background-color: #fff; /* White background for cards and tables */
+    border: 1px solid #ddd; /* Light gray border */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.btn-primary {
+    background-color: #3498db; /* Blue primary button */
+    border-color: #3498db;
+}
+
+    .btn-primary:hover {
+        background-color: #2980b9; /* Darker blue on hover */
+        border-color: #2980b9;
+    }
+
+.table th {
+    background-color: #f0f0f0; /* Light gray table header */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9; /* Light gray table row */
+}

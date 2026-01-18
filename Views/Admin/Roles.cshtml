@@ -1,0 +1,130 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "Role Management";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-shield-check"></i> @ViewData["Title"]</h1>
+        <a asp-controller="Admin" asp-action="Users" class="btn btn-outline-primary">
+            <i class="bi bi-person-gear"></i> Manage Users
+        </a>
+    </div>
+
+    <!-- System Roles Information -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-info-circle"></i> System Roles Overview
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Available Roles:</h6>
+                    <ul class="list-unstyled">
+                        <li><span class="badge bg-primary me-2">Administrator</span> Full system access</li>
+                        <li><span class="badge bg-info me-2">CustomerLiaison</span> Customer management</li>
+                        <li><span class="badge bg-success me-2">InventoryLiaison</span> Inventory management</li>
+                        <li><span class="badge bg-warning me-2">FaultTechnician</span> Fault report handling</li>
+                        <li><span class="badge bg-secondary me-2">MaintenanceTechnician</span> Maintenance operations</li>
+                        <li><span class="badge bg-dark me-2">PurchasingManager</span> Purchase request management</li>
+                        <li><span class="badge bg-light text-dark me-2">Customer</span> Customer portal access</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Role Permissions:</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>Administrator:</strong> All system functions</li>
+                        <li><strong>CustomerLiaison:</strong> Customer management, fridge allocation</li>
+                        <li><strong>InventoryLiaison:</strong> Fridge inventory, supplier management</li>
+                        <li><strong>FaultTechnician:</strong> Fault diagnosis, repair management</li>
+                        <li><strong>MaintenanceTechnician:</strong> Maintenance scheduling, completion</li>
+                        <li><strong>PurchasingManager:</strong> Purchase requests, approvals</li>
+                        <li><strong>Customer:</strong> Personal dashboard, fault reporting</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roles Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Role Assignments</h5>
+        </div>
+        <div class="card-body">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Role Name</th>
+                                <th>Users Assigned</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var roleData in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@roleData.Role.Name</strong>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary fs-6">@roleData.UserCount users</span>
+                                    </td>
+                                    <td>
+                                        @switch (roleData.Role.Name)
+                                        {
+                                            case "Administrator":
+                                                <span class="text-muted">Full system access and control</span>
+                                                break;
+                                            case "CustomerLiaison":
+                                                <span class="text-muted">Customer relationship management</span>
+                                                break;
+                                            case "InventoryLiaison":
+                                                <span class="text-muted">Inventory and supplier management</span>
+                                                break;
+                                            case "FaultTechnician":
+                                                <span class="text-muted">Fault diagnosis and repair</span>
+                                                break;
+                                            case "MaintenanceTechnician":
+                                                <span class="text-muted">Maintenance scheduling and execution</span>
+                                                break;
+                                            case "PurchasingManager":
+                                                <span class="text-muted">Purchase request management</span>
+                                                break;
+                                            case "Customer":
+                                                <span class="text-muted">Customer portal access</span>
+                                                break;
+                                            default:
+                                                <span class="text-muted">Custom role</span>
+                                                break;
+                                        }
+                                    </td>
+                                    <td>
+                                        <a asp-controller="Admin" asp-action="Users" asp-route-roleFilter="@roleData.Role.Name" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-people"></i> View Users
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-shield-check display-1 text-muted"></i>
+                    <h4 class="text-muted mt-3">No Roles Found</h4>
+                    <p class="text-muted">System roles will be displayed here.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

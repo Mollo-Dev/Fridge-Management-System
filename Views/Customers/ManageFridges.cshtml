@@ -1,0 +1,383 @@
+@model Customer
+@using GRP_03_27.Enums;
+
+@{
+    ViewData["Title"] = "Manage Fridges - " + Model.BusinessName;
+}
+
+<style>
+    .transition-fade {
+        transition: all 0.3s ease-in-out;
+    }
+
+        .transition-fade:hover {
+            transform: translateY(-2px);
+            background-color: rgba(0, 123, 255, 0.04) !important;
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    .rounded-top-3 {
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+    }
+
+    .rounded-start-2 {
+        border-top-left-radius: 0.5rem !important;
+        border-bottom-left-radius: 0.5rem !important;
+    }
+
+    .rounded-end-2 {
+        border-top-right-radius: 0.5rem !important;
+        border-bottom-right-radius: 0.5rem !important;
+    }
+
+    .fs-7 {
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-6 fw-bold text-primary mb-2">
+            <i class="fas fa-refrigerator me-3"></i>Manage Fridge Allocations
+        </h1>
+        <p class="text-muted mb-0 fs-6">
+            <i class="fas fa-building me-1"></i>@Model.BusinessName
+        </p>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-primary btn-lg">
+        <i class="fas fa-arrow-left me-2"></i> Back to Customers
+    </a>
+</div>
+
+<!-- Enhanced Customer Information Card -->
+<div class="card shadow-lg border-0 rounded-3 mb-4">
+    <div class="card-header bg-gradient-primary text-white py-3 rounded-top-3">
+        <h5 class="card-title mb-0 fw-semibold">
+            <i class="fas fa-info-circle me-2"></i>Customer Information
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-12 mb-3">
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                        <i class="fas fa-user text-primary fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-semibold mb-1">Contact Person</h6>
+                        <p class="mb-0 text-muted">@Model.ContactPerson</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center mb-3">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                        <i class="fas fa-phone text-primary fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-semibold mb-1">Phone Number</h6>
+                        <p class="mb-0 text-muted">@Model.PhoneNumber</p>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                        <i class="fas fa-envelope text-primary fs-5"></i>
+                    </div>
+                    <div>
+                        <h6 class="fw-semibold mb-1">Email Address</h6>
+                        <p class="mb-0 text-muted">@Model.Email</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <h6 class="fw-semibold mb-3">Fridge Statistics</h6>
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="border-end pe-3">
+                            <div class="fw-bold text-primary fs-2">@Model.Fridges.Count()</div>
+                            <small class="text-muted">Total Fridges</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border-end pe-3">
+                            <div class="fw-bold text-success fs-2">@Model.ActiveFridges</div>
+                            <small class="text-muted">Active</small>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div>
+                            <div class="fw-bold text-danger fs-2">@Model.Fridges.Count(f => f.Status == FridgeStatus.Faulty)</div>
+                            <small class="text-muted">Faulty</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Enhanced Allocated Fridges Section -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow-lg border-0 rounded-3 h-100">
+            <div class="card-header bg-light py-3 rounded-top-3">
+                <h5 class="card-title mb-0 fw-semibold text-dark">
+                    <i class="fas fa-list me-2"></i>Allocated Fridges
+                    <span class="badge bg-primary ms-2 fs-6">@Model.Fridges.Count()</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Fridges.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th class="fw-semibold text-dark">Model & Serial</th>
+                                    <th class="fw-semibold text-dark">Status</th>
+                                    <th class="fw-semibold text-dark">Purchase Date</th>
+                                    <th class="fw-semibold text-dark">Age</th>
+                                    <th class="fw-semibold text-dark text-end">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var fridge in Model.Fridges)
+                                {
+                                    <tr class="transition-fade">
+                                        <td>
+                                            <div>
+                                                <h6 class="fw-semibold mb-1">@fridge.Model</h6>
+                                                <small class="text-muted">SN: @fridge.SerialNumber</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge @GetStatusBadgeClass(fridge.Status) fs-7">
+                                                @fridge.Status
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span class="text-muted">@fridge.PurchaseDate.ToString("MMM dd, yyyy")</span>
+                                        </td>
+                                        <td>
+                                            <span class="fw-semibold">@fridge.AgeInMonths months</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <a asp-controller="Fridges" asp-action="Details" asp-route-id="@fridge.FridgeId"
+                                                   class="btn btn-outline-info rounded-start-2"
+                                                   title="View Fridge Details"
+                                                   data-bs-toggle="tooltip">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                @if (fridge.Status == FridgeStatus.Allocated)
+                                                {
+                                                    <form asp-action="DeallocateFridge" method="post" class="d-inline">
+                                                        <input type="hidden" name="customerId" value="@Model.CustomerId" />
+                                                        <input type="hidden" name="fridgeId" value="@fridge.FridgeId" />
+                                                        <button type="submit"
+                                                                class="btn btn-outline-warning rounded-end-2"
+                                                                title="Deallocate Fridge"
+                                                                data-bs-toggle="tooltip"
+                                                                onclick="return confirm('Are you sure you want to deallocate this fridge from @Model.BusinessName?')">
+                                                            <i class="fas fa-exchange-alt"></i>
+                                                        </button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-5">
+                        <div class="mb-4">
+                            <i class="fas fa-refrigerator fa-4x text-muted opacity-50"></i>
+                        </div>
+                        <h5 class="text-muted fw-semibold mb-3">No Fridges Allocated</h5>
+                        <p class="text-muted mb-4">Use the allocation form to assign fridges to this customer.</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button type="button" class="btn btn-primary" onclick="scrollToAllocation()">
+                                <i class="fas fa-plus me-2"></i> Allocate Fridge
+                            </button>
+                            <a asp-controller="PurchaseRequests" asp-action="Create" class="btn btn-outline-primary">
+                                <i class="fas fa-shopping-cart me-2"></i> Request Fridges
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Allocation Form Section -->
+    <div class="col-xl-4 col-lg-5">
+        <!-- Allocation Form Card -->
+        <div class="card shadow-lg border-0 rounded-3 mb-4" id="allocationForm">
+            <div class="card-header bg-success text-white py-3 rounded-top-3">
+                <h5 class="card-title mb-0 fw-semibold">
+                    <i class="fas fa-plus-circle me-2"></i>Allocate New Fridge
+                </h5>
+            </div>
+            <div class="card-body">
+                <form asp-action="AllocateFridge" method="post" id="allocateForm">
+                    <input type="hidden" name="customerId" value="@Model.CustomerId" />
+
+                    <div class="mb-4">
+                        <label for="fridgeId" class="form-label fw-semibold text-dark">
+                            <i class="fas fa-refrigerator me-1 text-muted"></i>Select Available Fridge
+                        </label>
+                        <select name="fridgeId" class="form-select form-select-lg" required id="fridgeSelect">
+                            <option value="">-- Choose a fridge --</option>
+                            @foreach (var fridge in ViewBag.AvailableFridges as SelectList)
+                            {
+                                <option value="@fridge.Value">@fridge.Text</option>
+                            }
+                        </select>
+                        <div class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>Only available fridges are shown in this list.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-lg w-100" id="allocateBtn">
+                        <i class="fas fa-save me-2"></i> Allocate Fridge
+                    </button>
+                </form>
+
+                @if (ViewBag.AvailableFridges == null || !(ViewBag.AvailableFridges as SelectList).Any())
+                {
+                    <div class="alert alert-warning mt-4 border-0 rounded-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-exclamation-triangle fs-4 me-3 text-warning"></i>
+                            <div>
+                                <h6 class="fw-semibold mb-1">No Available Fridges</h6>
+                                <p class="mb-0">All fridges are currently allocated. Consider creating a purchase request.</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Enhanced Quick Actions Card -->
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header bg-info text-white py-3 rounded-top-3">
+                <h5 class="card-title mb-0 fw-semibold">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-3">
+                    <a asp-controller="PurchaseRequests" asp-action="Create"
+                       class="btn btn-outline-primary btn-lg d-flex align-items-center justify-content-center">
+                        <i class="fas fa-shopping-cart me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">Request New Fridges</div>
+                            <small class="text-muted">Create purchase request</small>
+                        </div>
+                    </a>
+                    <a asp-action="Details" asp-route-id="@Model.CustomerId"
+                       class="btn btn-outline-info btn-lg d-flex align-items-center justify-content-center">
+                        <i class="fas fa-user me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">Customer Details</div>
+                            <small class="text-muted">View full profile</small>
+                        </div>
+                    </a>
+                    <a asp-action="AllocationHistory" asp-route-id="@Model.CustomerId"
+                       class="btn btn-outline-secondary btn-lg d-flex align-items-center justify-content-center">
+                        <i class="fas fa-history me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">Allocation History</div>
+                            <small class="text-muted">View past activities</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Enhanced form handling
+        const allocateForm = document.getElementById('allocateForm');
+        const allocateBtn = document.getElementById('allocateBtn');
+        const fridgeSelect = document.getElementById('fridgeSelect');
+
+        if (allocateForm && allocateBtn && fridgeSelect) {
+            allocateForm.addEventListener('submit', function(e) {
+                if (fridgeSelect.value === '') {
+                    e.preventDefault();
+                    fridgeSelect.focus();
+                    // Add shake animation
+                    fridgeSelect.classList.add('is-invalid');
+                    setTimeout(() => fridgeSelect.classList.remove('is-invalid'), 1000);
+                    return false;
+                }
+
+                // Show loading state
+                allocateBtn.disabled = true;
+                allocateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Allocating...';
+            });
+
+            // Real-time validation
+            fridgeSelect.addEventListener('change', function() {
+                if (this.value !== '') {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                }
+            });
+        }
+    });
+
+    function scrollToAllocation() {
+        const allocationForm = document.getElementById('allocationForm');
+        const fridgeSelect = document.getElementById('fridgeSelect');
+        if (allocationForm) {
+            allocationForm.scrollIntoView({
+                behavior: 'smooth'
+            });
+            if (fridgeSelect) {
+                fridgeSelect.focus();
+            }
+        }
+    }
+
+    // Auto-hide alerts after 5 seconds
+    setTimeout(function() {
+        var alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            var bsAlert = new bootstrap.Alert(alert);
+            bsAlert.close();
+        });
+    }, 5000);
+</script>
+
+@functions {
+    public string GetStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-success bg-opacity-10 text-success border border-success",
+            FridgeStatus.Allocated => "bg-primary bg-opacity-10 text-primary border border-primary",
+            FridgeStatus.Faulty => "bg-danger bg-opacity-10 text-danger border border-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning bg-opacity-10 text-warning border border-warning",
+            FridgeStatus.Scrapped => "bg-secondary bg-opacity-10 text-secondary border border-secondary",
+            _ => "bg-secondary bg-opacity-10 text-secondary border border-secondary"
+        };
+    }
+}

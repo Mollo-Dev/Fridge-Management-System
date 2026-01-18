@@ -1,0 +1,324 @@
+﻿@model GRP_03_27.Models.Login
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Fridge Management System</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- BODY & BACKGROUND --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a365d, #2c5282, #3182ce);
+            overflow: hidden;
+            color: #fff;
+            position: relative;
+        }
+
+        /* --- FLOATING PARTICLES --- */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(49,130,206,0.15);
+            animation: float 12s ease-in-out infinite;
+            filter: blur(4px);
+        }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.1);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* --- GLASSMORPHIC LOGIN CARD --- */
+        .login-card {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            padding: 3.5rem 3rem;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            z-index: 1;
+            text-align: left;
+        }
+
+        /* --- CARD HEADER --- */
+        .login-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .login-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* --- SUBTITLE --- */
+        .login-subtitle {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .input-group-text {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-right: none;
+            padding: 14px 10px;
+            color: #fff;
+        }
+
+        .form-control {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+            padding: 14px 16px;
+            font-size: 1rem;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .input-group {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .input-group:focus-within {
+            border-color: #3182ce;
+            box-shadow: 0 0 15px rgba(49,130,206,0.3);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 15px rgba(49,130,206,0.3);
+            background: rgba(255,255,255,0.18);
+            color: #fff;
+        }
+
+        /* --- BUTTON --- */
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #3182ce, #2b6cb0);
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(49,130,206,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(49,130,206,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        /* --- LINKS --- */
+        .forgot-link {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .forgot-link:hover {
+            color: #1a365d;
+        }
+
+        /* --- REGISTER SECTION --- */
+        .register-section {
+            text-align: center;
+        }
+
+        .register-section a {
+            color: #1a365d;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .register-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* --- FORM CHECK --- */
+        .form-check-input {
+            background-color: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .form-check-input:checked {
+            background-color: #3182ce;
+            border-color: #3182ce;
+        }
+
+        .form-check-label {
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* --- ALERTS --- */
+        .alert {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success {
+            background: rgba(40,167,69,0.2);
+            border-color: rgba(40,167,69,0.3);
+        }
+
+        .alert-danger {
+            background: rgba(220,53,69,0.2);
+            border-color: rgba(220,53,69,0.3);
+        }
+
+
+        /* --- RESPONSIVE --- */
+        @@media (max-width: 768px) {
+            .login-card {
+                padding: 2.5rem 2rem;
+                margin: 1rem;
+                max-width: 90%;
+            }
+
+            .login-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating particles -->
+    @for (int i = 0; i < 15; i++)
+    {
+        <div class="particle" style="width:@(Random.Shared.Next(20, 60))px; height:@(Random.Shared.Next(20, 60))px; top:@(Random.Shared.Next(0, 100))%; left:@(Random.Shared.Next(0, 100))%; animation-delay:@(Random.Shared.NextDouble() * 5)s;"></div>
+    }
+
+    <div class="login-card">
+        <div class="login-header">
+            <img src="~/Images/Logo.png" alt="Logo" class="login-logo" />
+            <h2 class="login-title">Login</h2>
+                    </div>
+
+        <p class="login-subtitle">Welcome back! Please sign in to your account.</p>
+
+        @if (TempData["Success"] != null)
+        {
+            <div id="successMessage" class="alert alert-success">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div id="errorMessage" class="alert alert-danger">@TempData["Error"]</div>
+        }
+
+        <form asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input asp-for="Username" class="form-control" placeholder="Username" />
+                        </div>
+                <span asp-validation-for="Username" class="text-danger small"></span>
+                    </div>
+
+            <div class="form-group mb-3 position-relative">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+
+                @* Custom ModelState errors *@
+                @if (ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                {
+                    <div class="text-danger mt-1">
+                        @foreach (var error in ViewData.ModelState[string.Empty].Errors)
+                        {
+                            <div>@error.ErrorMessage</div>
+                        }
+                    </div>
+                }
+                    </div>
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" />
+                    <label asp-for="RememberMe" class="form-check-label">Remember me</label>
+                    </div>
+                <a asp-action="VerifyEmail" asp-controller="Account" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+
+        <div class="register-section">
+            <p>Don't have an account yet? <a asp-action="Register" asp-controller="Account">Create Account</a></p>
+    </div>
+</div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-hide TempData messages
+        setTimeout(() => {
+            document.getElementById("successMessage")?.remove();
+            document.getElementById("errorMessage")?.remove();
+        }, 5000);
+    </script>
+</body>
+</html>

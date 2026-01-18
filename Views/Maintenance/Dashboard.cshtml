@@ -1,0 +1,296 @@
+﻿@model GRP_03_27.Models.ViewModels.MaintenanceDashboardViewModel
+@{
+    ViewData["Title"] = "Maintenance Dashboard";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Maintenance Dashboard</h1>
+        <div>
+            <a asp-action="Schedule" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span class="text">Schedule Maintenance</span>
+            </a>
+            <a asp-action="Index" class="btn btn-info btn-icon-split ml-2">
+                <span class="icon text-white-50">
+                    <i class="fas fa-list"></i>
+                </span>
+                <span class="text">All Records</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Schedule" class="btn btn-primary btn-block">
+                                <i class="fas fa-plus-circle me-2"></i>Schedule New Maintenance
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Index" class="btn btn-info btn-block">
+                                <i class="fas fa-list me-2"></i>View All Records
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Index" asp-route-statusFilter="Scheduled" class="btn btn-warning btn-block">
+                                <i class="fas fa-calendar-check me-2"></i>Scheduled Maintenance
+                            </a>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <a asp-action="Index" asp-route-statusFilter="Completed" class="btn btn-success btn-block">
+                                <i class="fas fa-check-circle me-2"></i>Completed Maintenance
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row">
+        <!-- Today's Maintenance -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Today's Maintenance
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TodayMaintenanceCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-day fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- This Week -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                This Week
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.WeeklyMaintenanceCount</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-calendar-week fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed This Month -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                Completed This Month
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.CompletedThisMonth</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- High Priority -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                High Priority
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.HighPriorityMaintenance</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Upcoming Maintenance -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Upcoming Maintenance (Next 7 Days)</h6>
+                    <a asp-action="Index" asp-route-statusFilter="Scheduled" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.UpcomingMaintenance.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Fridge</th>
+                                        <th>Customer</th>
+                                        <th>Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var maintenance in Model.UpcomingMaintenance)
+                                    {
+                                        <tr>
+                                            <td>@maintenance.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                            <td>@maintenance.Fridge?.Model</td>
+                                            <td>@maintenance.Fridge?.Customer?.BusinessName</td>
+                                            <td>
+                                                <span class="badge badge-info">@maintenance.MaintenanceType.ToString()</span>
+                                            </td>
+                                            <td>
+                                                <a asp-action="Details" asp-route-id="@maintenance.MaintenanceRecordId" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                                <a asp-action="Complete" asp-route-id="@maintenance.MaintenanceRecordId" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Complete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No upcoming maintenance scheduled.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Overdue Maintenance -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-danger">Overdue Maintenance</h6>
+                    <a asp-action="Index" asp-route-statusFilter="Scheduled" class="btn btn-sm btn-outline-danger">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.OverdueMaintenance.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Scheduled Date</th>
+                                        <th>Fridge</th>
+                                        <th>Customer</th>
+                                        <th>Days Overdue</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var maintenance in Model.OverdueMaintenance)
+                                    {
+                                        <tr>
+                                            <td>@maintenance.ScheduledDate.ToString("MMM dd, yyyy")</td>
+                                            <td>@maintenance.Fridge?.Model</td>
+                                            <td>@maintenance.Fridge?.Customer?.BusinessName</td>
+                                            <td>
+                                                <span class="badge badge-danger">
+                                                    @((int)(DateTime.UtcNow - maintenance.ScheduledDate).TotalDays) days
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a asp-action="Details" asp-route-id="@maintenance.MaintenanceRecordId" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-eye"></i> View
+                                                </a>
+                                                <a asp-action="Complete" asp-route-id="@maintenance.MaintenanceRecordId" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Complete
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No overdue maintenance.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Completions -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-success">Recently Completed Maintenance</h6>
+                    <a asp-action="Index" asp-route-statusFilter="Completed" class="btn btn-sm btn-outline-success">View All</a>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentCompletions.Any())
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Completed Date</th>
+                                        <th>Fridge</th>
+                                        <th>Customer</th>
+                                        <th>Type</th>
+                                        <th>Technician</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var maintenance in Model.RecentCompletions)
+                                    {
+                                        <tr>
+                                            <td>@maintenance.PerformedDate?.ToString("MMM dd, yyyy HH:mm")</td>
+                                            <td>@maintenance.Fridge?.Model</td>
+                                            <td>@maintenance.Fridge?.Customer?.BusinessName</td>
+                                            <td>
+                                                <span class="badge badge-success">@maintenance.MaintenanceType.ToString()</span>
+                                            </td>
+                                            <td>@maintenance.AssignedTechnician?.FirstName @maintenance.AssignedTechnician?.LastName</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No recent completions.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

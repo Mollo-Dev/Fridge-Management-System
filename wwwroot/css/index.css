@@ -1,0 +1,160 @@
+﻿:root {
+    --ice-white: #f5fafd;
+    --cool-blue: #d6ecf3;
+    --sky-blue: #a5d8ff;
+    --frost-blue: #89c2d9;
+    --deep-blue: #468faf;
+    --text-blue: #1b4965;
+}
+
+/* Body */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--ice-white);
+    color: var(--text-blue);
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+/* Frost Animation */
+.frost {
+    position: fixed;
+    top: -20px;
+    width: 12px;
+    height: 12px;
+    background: rgba(173, 216, 230, 0.4);
+    border-radius: 50%;
+    animation: float 6s linear infinite;
+    z-index: 0;
+    pointer-events: none; /* IMPORTANT: lets clicks pass through */
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translateY(50vh) translateX(10px);
+        opacity: 0.4;
+    }
+
+    100% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(to right, var(--cool-blue), var(--sky-blue));
+    border-bottom: 2px solid var(--frost-blue);
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 20; /* ensure it's above frosts */
+}
+
+/* Hero */
+.hero-header {
+    padding: 60px 0 80px;
+    position: relative;
+    z-index: 10; /* ensure buttons are clickable */
+}
+
+    .hero-header h1, .hero-header p {
+        color: var(--text-blue);
+    }
+
+.hero-buttons a {
+    position: relative;
+    z-index: 10; /* buttons above frosts */
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--frost-blue);
+    border-color: var(--frost-blue);
+    color: white;
+    font-weight: 500;
+}
+
+    .btn-primary:hover {
+        background-color: var(--deep-blue);
+        border-color: var(--deep-blue);
+        transform: translateY(-2px);
+    }
+
+.btn-outline-primary {
+    border-color: var(--frost-blue);
+    color: var(--frost-blue);
+    font-weight: 500;
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--frost-blue);
+        border-color: var(--frost-blue);
+        color: white;
+    }
+
+/* Feature & About Cards */
+.feature-item, .card {
+    background-color: #ffffff;
+    border: 1px solid var(--cool-blue);
+    border-radius: 12px;
+    padding: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-item:hover, .card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+/* Contact Banner */
+.contact-banner {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 15;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+/* Navbar under contact banner */
+.navbar {
+    position: fixed;
+    top: 40px; /* adjust to contact banner height */
+    width: 100%;
+    z-index: 20;
+}
+
+/* Main content spacing so it doesn't hide behind fixed header */
+main {
+    margin-top: 100px; /* total height of contact + navbar */
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        top: 50px; /* slightly taller on mobile if needed */
+    }
+
+    main {
+        margin-top: 110px;
+    }
+
+    .contact-banner small {
+        display: block;
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-buttons .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

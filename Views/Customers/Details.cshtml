@@ -1,0 +1,390 @@
+﻿@model Customer
+@using GRP_03_27.Enums;
+
+@{
+    ViewData["Title"] = "Customer Details";
+}
+
+<style>
+    .transition-fade {
+        transition: all 0.3s ease-in-out;
+    }
+
+        .transition-fade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        }
+
+    .detail-item {
+        border-bottom: 1px solid #f8f9fa;
+        padding-bottom: 1rem;
+    }
+
+        .detail-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+    .fridge-item {
+        transition: all 0.3s ease-in-out;
+    }
+
+        .fridge-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+
+    .rounded-top-3 {
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+    }
+
+    .fs-7 {
+        font-size: 0.875rem;
+    }
+</style>
+
+<div class="row">
+    <!-- Enhanced Main Customer Details -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow-lg border-0 rounded-3 mb-4">
+            <div class="card-header bg-gradient-primary text-white py-3 rounded-top-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h3 class="card-title mb-0 fw-semibold">
+                        <i class="fas fa-user me-2"></i>Customer Details
+                    </h3>
+                    <div class="d-flex gap-2">
+                        <a asp-action="ManageFridges" asp-route-id="@Model.CustomerId"
+                           class="btn btn-light btn-sm text-primary fw-semibold">
+                            <i class="fas fa-refrigerator me-1"></i> Manage Allocations
+                        </a>
+                        <a asp-action="Index" class="btn btn-light btn-sm text-primary fw-semibold">
+                            <i class="fas fa-arrow-left me-1"></i> Back
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="detail-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-building text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-semibold text-dark mb-1">Business Information</h6>
+                                    <p class="mb-0 text-muted">@Model.BusinessName</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-user text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-semibold text-dark mb-1">Contact Person</h6>
+                                    <p class="mb-0 text-muted">@Model.ContactPerson</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-phone text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-semibold text-dark mb-1">Phone Number</h6>
+                                    <p class="mb-0 text-muted">@Model.PhoneNumber</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="detail-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-envelope text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-semibold text-dark mb-1">Email Address</h6>
+                                    <p class="mb-0 text-muted">@Model.Email</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-map-marker-alt text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-semibold text-dark mb-1">Physical Address</h6>
+                                    <p class="mb-0 text-muted">@Model.PhysicalAddress</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-item mb-4">
+                            <div class="d-flex align-items-center mb-2">
+                                <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-store text-primary fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-semibold text-dark mb-1">Business Type</h6>
+                                    <span class="badge bg-info bg-opacity-10 text-info border border-info fs-7">
+                                        @Model.Type
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="row mt-4 pt-4 border-top">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="fas fa-calendar-check text-success fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold text-dark mb-1">Registration Date</h6>
+                                <p class="mb-0 text-muted">@Model.RegistrationDate.ToString("MMMM dd, yyyy")</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                                <i class="fas fa-sync-alt text-warning fs-5"></i>
+                            </div>
+                            <div>
+                                <h6 class="fw-semibold text-dark mb-1">Last Updated</h6>
+                                <p class="mb-0 text-muted">@Model.LastUpdated.ToString("MMMM dd, yyyy HH:mm")</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Customer Activity -->
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header bg-light py-3 rounded-top-3">
+                <h5 class="card-title mb-0 fw-semibold text-dark">
+                    <i class="fas fa-chart-line me-2"></i>Customer Activity & Analytics
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                            <div class="fw-bold text-primary fs-2">@Model.TotalFridges</div>
+                            <small class="text-muted">Total Fridges</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                            <div class="fw-bold text-success fs-2">@Model.ActiveFridges</div>
+                            <small class="text-muted">Active Fridges</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="bg-info bg-opacity-10 rounded-3 p-3">
+                            <div class="fw-bold text-info fs-2">@Model.TotalFaults</div>
+                            <small class="text-muted">Total Faults</small>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                            <div class="fw-bold text-warning fs-2">@Model.ActiveFaults</div>
+                            <small class="text-muted">Active Faults</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Metrics -->
+                <div class="row mt-3 pt-3 border-top">
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Customer Since:</span>
+                            <span class="fw-semibold">@Model.CustomerSinceMonths months</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="text-muted">Utilization Rate:</span>
+                            <span class="fw-semibold text-success">@Model.UtilizationRate.ToString("F1")%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Sidebar -->
+    <div class="col-xl-4 col-lg-5">
+        <!-- Assigned Fridges Card -->
+        <div class="card shadow-lg border-0 rounded-3 mb-4">
+            <div class="card-header bg-success text-white py-3 rounded-top-3">
+                <h5 class="card-title mb-0 fw-semibold">
+                    <i class="fas fa-refrigerator me-2"></i>Assigned Fridges
+                    <span class="badge bg-white text-success ms-2">@Model.Fridges.Count()</span>
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Fridges.Any())
+                {
+                    <div class="fridge-list">
+                        @foreach (var fridge in Model.Fridges)
+                        {
+                            <div class="fridge-item card border-0 shadow-sm mb-3 transition-fade">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="fw-semibold text-dark mb-1">@fridge.Model</h6>
+                                        <span class="badge @GetStatusBadgeClass(fridge.Status) fs-7">
+                                            @fridge.Status
+                                        </span>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">SN: @fridge.SerialNumber</small>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-controller="Fridges" asp-action="Details" asp-route-id="@fridge.FridgeId"
+                                               class="btn btn-outline-info btn-sm" title="View Details" data-bs-toggle="tooltip">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a asp-controller="FaultReports" asp-action="Create" asp-route-fridgeId="@fridge.FridgeId"
+                                               class="btn btn-outline-warning btn-sm" title="Report Fault" data-bs-toggle="tooltip">
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    @if (fridge.AgeInMonths > 24)
+                                    {
+                                        <div class="mt-2">
+                                            <small class="text-warning fw-semibold">
+                                                <i class="fas fa-exclamation-circle me-1"></i>
+                                                Aged: @fridge.AgeInMonths months
+                                            </small>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-4">
+                        <i class="fas fa-refrigerator fa-3x text-muted opacity-50 mb-3"></i>
+                        <h6 class="text-muted fw-semibold mb-3">No Fridges Assigned</h6>
+                        <p class="text-muted small mb-4">This customer doesn't have any fridges allocated yet.</p>
+                        <a asp-action="ManageFridges" asp-route-id="@Model.CustomerId" class="btn btn-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i> Allocate Fridge
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Quick Actions Card -->
+        <div class="card shadow-lg border-0 rounded-3">
+            <div class="card-header bg-info text-white py-3 rounded-top-3">
+                <h5 class="card-title mb-0 fw-semibold">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="ManageFridges" asp-route-id="@Model.CustomerId"
+                       class="btn btn-outline-primary d-flex align-items-center justify-content-start p-3">
+                        <i class="fas fa-refrigerator me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">Manage Allocations</div>
+                            <small class="text-muted">Assign or remove fridges</small>
+                        </div>
+                    </a>
+                    <a asp-action="AllocationHistory" asp-route-id="@Model.CustomerId"
+                       class="btn btn-outline-info d-flex align-items-center justify-content-start p-3">
+                        <i class="fas fa-history me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">View History</div>
+                            <small class="text-muted">Allocation timeline</small>
+                        </div>
+                    </a>
+                    <a asp-controller="FaultReports" asp-action="Create"
+                       class="btn btn-outline-warning d-flex align-items-center justify-content-start p-3">
+                        <i class="fas fa-tools me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">Report Fault</div>
+                            <small class="text-muted">Create fault report</small>
+                        </div>
+                    </a>
+                    <a href="mailto:@Model.Email"
+                       class="btn btn-outline-success d-flex align-items-center justify-content-start p-3">
+                        <i class="fas fa-envelope me-3 fs-5"></i>
+                        <div class="text-start">
+                            <div class="fw-semibold">Send Email</div>
+                            <small class="text-muted">Contact customer</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Enhanced fridge item interactions
+        document.querySelectorAll('.fridge-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (!e.target.closest('a') && !e.target.closest('button')) {
+                    const viewLink = this.querySelector('a[title="View Details"]');
+                    if (viewLink) {
+                        viewLink.click();
+                    }
+                }
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+</script>
+
+@functions {
+    public string GetStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-success bg-opacity-10 text-success border border-success",
+            FridgeStatus.Allocated => "bg-primary bg-opacity-10 text-primary border border-primary",
+            FridgeStatus.Faulty => "bg-danger bg-opacity-10 text-danger border border-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning bg-opacity-10 text-warning border border-warning",
+            FridgeStatus.Scrapped => "bg-secondary bg-opacity-10 text-secondary border border-secondary",
+            _ => "bg-secondary bg-opacity-10 text-secondary border border-secondary"
+        };
+    }
+}

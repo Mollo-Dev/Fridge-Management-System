@@ -1,0 +1,128 @@
+﻿@model GRP_03_27.Models.ViewModels.ScheduleMaintenanceViewModel
+@{
+    ViewData["Title"] = "Schedule Maintenance";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Schedule Maintenance</h1>
+        <a asp-action="Index" class="btn btn-secondary btn-icon-split">
+            <span class="icon text-white-50">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text">Back to List</span>
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Maintenance Details</h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Schedule" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="FridgeId" class="control-label"></label>
+                            <select asp-for="FridgeId" asp-items="Model.AvailableFridges" class="form-control">
+                                <option value="">-- Select Fridge --</option>
+                            </select>
+                            <span asp-validation-for="FridgeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="AssignedTechnicianId" class="control-label"></label>
+                            <select asp-for="AssignedTechnicianId" asp-items="Model.AvailableTechnicians" class="form-control">
+                                <option value="">-- Select Technician --</option>
+                            </select>
+                            <span asp-validation-for="AssignedTechnicianId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ScheduledDate" class="control-label"></label>
+                            <input asp-for="ScheduledDate" class="form-control" />
+                            <span asp-validation-for="ScheduledDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="MaintenanceType" class="control-label"></label>
+                            <select asp-for="MaintenanceType" asp-items="Html.GetEnumSelectList<GRP_03_27.Enums.MaintenanceType>()" class="form-control"></select>
+                            <span asp-validation-for="MaintenanceType" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TechnicianNotes" class="control-label"></label>
+                            <textarea asp-for="TechnicianNotes" class="form-control" rows="3" placeholder="Enter maintenance notes..."></textarea>
+                            <span asp-validation-for="TechnicianNotes" class="text-danger"></span>
+                            <small class="form-text text-muted">Minimum 10 characters required.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ServiceChecklist" class="control-label"></label>
+                            <textarea asp-for="ServiceChecklist" class="form-control" rows="4" placeholder="Enter service checklist items..."></textarea>
+                            <span asp-validation-for="ServiceChecklist" class="text-danger"></span>
+                            <small class="form-text text-muted">Minimum 20 characters required.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-calendar-plus"></i>
+                                </span>
+                                <span class="text">Schedule Maintenance</span>
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">Maintenance Types</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Preventive</strong>
+                        <p class="text-muted small">Regular scheduled maintenance to prevent issues</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Corrective</strong>
+                        <p class="text-muted small">Repair of identified faults or issues</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Emergency</strong>
+                        <p class="text-muted small">Urgent maintenance for critical issues</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Routine Check</strong>
+                        <p class="text-muted small">Regular inspection and basic maintenance</p>
+                    </div>
+                    <div>
+                        <strong>Seasonal</strong>
+                        <p class="text-muted small">Season-specific maintenance procedures</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            // Set minimum datetime for scheduled date
+            var now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('ScheduledDate').min = now.toISOString().slice(0, 16);
+        });
+    </script>
+}

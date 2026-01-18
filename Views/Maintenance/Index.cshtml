@@ -1,0 +1,158 @@
+﻿@model GRP_03_27.Models.ViewModels.MaintenanceIndexViewModel
+@{
+    ViewData["Title"] = "Maintenance Records";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Maintenance Records</h1>
+        <div>
+            <a asp-action="Schedule" class="btn btn-primary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-plus"></i>
+                </span>
+                <span class="text">Schedule Maintenance</span>
+            </a>
+            <a asp-action="Dashboard" class="btn btn-info btn-icon-split ml-2">
+                <span class="icon text-white-50">
+                    <i class="fas fa-tachometer-alt"></i>
+                </span>
+                <span class="text">Dashboard</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Filters</h6>
+        </div>
+        <div class="card-body">
+            <form method="get" class="form-inline">
+                <div class="form-group mr-3 mb-2">
+                    <label for="statusFilter" class="mr-2">Status:</label>
+                    <select class="form-control" id="statusFilter" name="statusFilter">
+                        <option value="">All Statuses</option>
+                        @foreach (var option in Model.StatusOptions)
+                        {
+                            <option value="@option.Value" selected="@(option.Value == Model.StatusFilter)">@option.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group mr-3 mb-2">
+                    <label for="technicianFilter" class="mr-2">Technician:</label>
+                    <select class="form-control" id="technicianFilter" name="technicianFilter">
+                        <option value="">All Technicians</option>
+                        @foreach (var option in Model.TechnicianOptions)
+                        {
+                            <option value="@option.Value" selected="@(option.Value == Model.TechnicianFilter)">@option.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group mr-3 mb-2">
+                    <label for="dateFrom" class="mr-2">From:</label>
+                    <input type="date" class="form-control" id="dateFrom" name="dateFrom" value="@Model.DateFrom?.ToString("yyyy-MM-dd")">
+                </div>
+                <div class="form-group mr-3 mb-2">
+                    <label for="dateTo" class="mr-2">To:</label>
+                    <input type="date" class="form-control" id="dateTo" name="dateTo" value="@Model.DateTo?.ToString("yyyy-MM-dd")">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Apply Filters</button>
+                <a asp-action="Index" class="btn btn-secondary mb-2 ml-2">Clear</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Maintenance Records Table -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Maintenance Records</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Scheduled Date</th>
+                            <th>Fridge</th>
+                            <th>Customer</th>
+                            <th>Technician</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var record in Model.MaintenanceRecords)
+                        {
+                            <tr>
+                                <td>@record.MaintenanceRecordId</td>
+                                <td>@record.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</td>
+                                <td>@record.Fridge?.Model (SN: @record.Fridge?.SerialNumber)</td>
+                                <td>@record.Fridge?.Customer?.BusinessName</td>
+                                <td>@record.AssignedTechnician?.FirstName @record.AssignedTechnician?.LastName</td>
+                                <td>
+                                    <span class="badge badge-info">@record.MaintenanceType</span>
+                                </td>
+                                <td>
+                                    @{
+                                        var statusBadgeClass = record.Status switch
+                                        {
+                                            GRP_03_27.Enums.MaintenanceStatus.Scheduled => "badge-primary",
+                                            GRP_03_27.Enums.MaintenanceStatus.InProgress => "badge-warning",
+                                            GRP_03_27.Enums.MaintenanceStatus.Completed => "badge-success",
+                                            GRP_03_27.Enums.MaintenanceStatus.Cancelled => "badge-secondary",
+                                            GRP_03_27.Enums.MaintenanceStatus.Rescheduled => "badge-info",
+                                            _ => "badge-secondary"
+                                        };
+                                    }
+                                    <span class="badge @statusBadgeClass">@record.Status</span>
+                                    @if (record.IsOverdue)
+                                    {
+                                        <span class="badge badge-danger ml-1">Overdue</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@record.MaintenanceRecordId" class="btn btn-info btn-sm">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        @if (record.Status == GRP_03_27.Enums.MaintenanceStatus.Scheduled)
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@record.MaintenanceRecordId" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a asp-action="Complete" asp-route-id="@record.MaintenanceRecordId" class="btn btn-success btn-sm">
+                                                <i class="fas fa-check"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("Index", new { page = i, statusFilter = Model.StatusFilter, technicianFilter = Model.TechnicianFilter, dateFrom = Model.DateFrom, dateTo = Model.DateTo })">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+
+            <div class="mt-3">
+                <p class="text-muted">Showing @Model.MaintenanceRecords.Count of @ViewBag.TotalRecords records</p>
+            </div>
+        </div>
+    </div>
+</div>

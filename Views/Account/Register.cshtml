@@ -1,0 +1,612 @@
+﻿@model GRP_03_27.Models.RegisterUser
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Fridge Management System</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- BODY & BACKGROUND --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a365d, #2c5282, #3182ce);
+            overflow: hidden;
+            color: #fff;
+            position: relative;
+        }
+
+        /* --- FLOATING PARTICLES --- */
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(49,130,206,0.15);
+            animation: float 12s ease-in-out infinite;
+            filter: blur(4px);
+        }
+
+        @@keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.1);
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* --- GLASSMORPHIC REGISTER CARD --- */
+        .register-card {
+            position: relative;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            padding: 3rem 2.5rem;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            z-index: 1;
+            text-align: left;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) transparent;
+        }
+
+        .register-card::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .register-card::-webkit-scrollbar-thumb {
+            background-color: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+
+        /* --- CARD HEADER --- */
+        .register-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 2rem;
+        }
+
+        .register-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .register-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* --- SUBTITLE --- */
+        .register-subtitle {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .register-link {
+            color: #1a365d;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .register-link:hover {
+            text-decoration: underline;
+            color: #1a365d;
+        }
+
+        .input-group-text {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-right: none;
+            padding: 14px 10px;
+            color: #fff;
+        }
+
+        .form-control {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-left: none;
+            border-radius: 0 12px 12px 0;
+            padding: 14px 16px;
+            font-size: 1rem;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .input-group {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .input-group:focus-within {
+            border-color: #3182ce;
+            box-shadow: 0 0 15px rgba(49,130,206,0.3);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #3182ce;
+            box-shadow: 0 0 15px rgba(49,130,206,0.3);
+            background: rgba(255,255,255,0.18);
+            color: #fff;
+        }
+
+        /* --- BUTTON --- */
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, #3182ce, #2b6cb0);
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 18px rgba(49,130,206,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(49,130,206,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        /* --- USERNAME SUGGESTIONS --- */
+        #username-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(255,255,255,0.95);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.3);
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+        }
+
+        #username-suggestions div {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            color: #1a365d;
+            transition: background-color 0.2s;
+        }
+
+        #username-suggestions div:hover {
+            background-color: rgba(49,130,206,0.1);
+        }
+
+        /* --- ALERTS --- */
+        .alert {
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .alert-success {
+            background: rgba(40,167,69,0.2);
+            border-color: rgba(40,167,69,0.3);
+        }
+
+        .alert-danger {
+            background: rgba(220,53,69,0.2);
+            border-color: rgba(220,53,69,0.3);
+        }
+
+        /* --- FORM FEEDBACK --- */
+        .form-text {
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        .text-success {
+            color: #96ceb4 !important;
+        }
+
+        .text-danger {
+            color: #ff8a8a !important;
+        }
+
+        /* --- RESPONSIVE --- */
+        @@media (max-width: 768px) {
+            .register-card {
+                padding: 2.5rem 2rem;
+                margin: 1rem;
+                max-width: 90%;
+            }
+
+            .register-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Floating particles -->
+    @for (int i = 0; i < 15; i++)
+    {
+        <div class="particle" style="width:@(Random.Shared.Next(20, 60))px; height:@(Random.Shared.Next(20, 60))px; top:@(Random.Shared.Next(0, 100))%; left:@(Random.Shared.Next(0, 100))%; animation-delay:@(Random.Shared.NextDouble() * 5)s;"></div>
+    }
+
+    <div class="register-card">
+        <div class="register-header">
+            <img src="~/Images/Logo.png" alt="Logo" class="register-logo" />
+            <h2 class="register-title">Create Account</h2>
+        </div>
+
+        <p class="register-subtitle">Join Fridge Management System Today!</p>
+        <div class="text-center mb-3">
+            <a asp-action="Login" class="register-link">Already have an account? Login</a>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div id="successMessage" class="alert alert-success">@TempData["SuccessMessage"]</div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div id="errorMessage" class="alert alert-danger">@TempData["ErrorMessage"]</div>
+        }
+
+        <form asp-action="Register" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <input asp-for="FirstName" class="form-control" placeholder="First Name" />
+                    </div>
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-person-fill"></i>
+                        </span>
+                        <input asp-for="LastName" class="form-control" placeholder="Last Name" />
+                    </div>
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0">
+                        <i class="bi bi-telephone"></i>
+                    </span>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone Number" />
+                </div>
+                <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                <small id="phoneFeedback" class="form-text"></small>
+            </div>
+
+            <div class="mb-3">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input asp-for="Email" class="form-control" placeholder="Email Address" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3" style="position: relative;">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-0">
+                        <i class="bi bi-at"></i>
+                    </span>
+                    <input asp-for="Username" class="form-control" placeholder="Username" />
+                </div>
+                <div id="username-suggestions"></div>
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-lock"></i>
+                        </span>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Password" />
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0">
+                            <i class="bi bi-lock-fill"></i>
+                        </span>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password" />
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register">
+                <i class="bi bi-person-plus me-2"></i>Create Account
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const firstNameInput = document.getElementById('FirstName');
+            const lastNameInput = document.getElementById('LastName');
+            const emailInput = document.getElementById('Email');
+            const usernameInput = document.getElementById('Username');
+            const passwordInput = document.getElementById('Password');
+            const confirmPasswordInput = document.getElementById('ConfirmPassword');
+            const phoneInput = document.getElementById('PhoneNumber');
+            const phoneFeedback = document.getElementById('phoneFeedback');
+
+            if (!firstNameInput || !lastNameInput || !emailInput || !usernameInput || !passwordInput) return;
+
+            // --- Username Suggestions from Full Name ---
+            async function generateUsernameSuggestions(firstName, lastName) {
+                if (!firstName || !lastName) return [];
+
+                const first = firstName.trim().toLowerCase().replace(/[^a-z]/g, '');
+                const last = lastName.trim().toLowerCase().replace(/[^a-z]/g, '');
+                let base = (first + last).substring(0, 10);
+
+                if (base.length < 4) base = (base + 'xxxx').substring(0, 4);
+
+                const year = new Date().getFullYear();
+                const suggestions = [
+                    base,
+                    `${first}.${last}`,
+                    `${first}_${last}`,
+                    `${first}${Math.floor(Math.random() * 100)}`,
+                    `${last}${Math.floor(Math.random() * 1000)}`,
+                    `${base}${year}`,
+                    `${first}_${last}${Math.floor(Math.random() * 10)}`
+                ];
+
+                const uniqueSuggestions = [];
+                for (const s of suggestions) {
+                    const res = await fetch(`/Account/CheckUsername?username=${encodeURIComponent(s)}`);
+                    const data = await res.json();
+                    if (!data.exists) uniqueSuggestions.push(s);
+                    if (uniqueSuggestions.length >= 5) break;
+                }
+
+                return uniqueSuggestions;
+            }
+
+            function displayUsernameSuggestions(suggestions) {
+                const container = document.getElementById('username-suggestions');
+                if (!container) return;
+
+                container.innerHTML = '';
+                const validSuggestions = suggestions.filter(s => s && s.length >= 4);
+                if (validSuggestions.length === 0) return;
+
+                validSuggestions.forEach(suggestion => {
+                    const div = document.createElement('div');
+                    div.textContent = suggestion;
+                    div.className = 'username-option';
+                    div.addEventListener('click', () => {
+                        usernameInput.value = suggestion;
+                        container.style.display = 'none';
+                    });
+                    container.appendChild(div);
+                });
+
+                container.style.display = 'block';
+            }
+
+            async function updateUsernameSuggestions() {
+                const first = firstNameInput.value.trim();
+                const last = lastNameInput.value.trim();
+                if (first && last) {
+                    const suggestions = await generateUsernameSuggestions(first, last);
+                    displayUsernameSuggestions(suggestions);
+                } else {
+                    const container = document.getElementById('username-suggestions');
+                    if (container) container.style.display = 'none';
+                }
+            }
+
+            firstNameInput.addEventListener('input', updateUsernameSuggestions);
+            lastNameInput.addEventListener('input', updateUsernameSuggestions);
+
+            // --- Full Name Check ---
+            async function checkFullName() {
+                const firstName = firstNameInput.value.trim();
+                const lastName = lastNameInput.value.trim();
+                const errorEl = lastNameInput.parentNode.querySelector('.full-name-error');
+
+                if (!firstName || !lastName) {
+                    if (errorEl) errorEl.textContent = '';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/Account/CheckFullName?firstName=${encodeURIComponent(firstName)}&lastName=${encodeURIComponent(lastName)}`);
+                    if (!response.ok) return;
+                    const result = await response.json();
+                    errorEl.textContent = result.exists ? 'User with this full name already exists' : '';
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            firstNameInput.addEventListener('input', checkFullName);
+            lastNameInput.addEventListener('input', checkFullName);
+
+            // --- Email Validation ---
+            emailInput.addEventListener('input', async () => {
+                const emailVal = emailInput.value.trim();
+
+                try {
+                    const response = await fetch(`/Account/CheckEmail?email=${encodeURIComponent(emailVal)}`);
+                    if (!response.ok) return;
+                    const result = await response.json();
+
+                    let errorEl = emailInput.parentNode.querySelector('.text-danger');
+                    if (result.exists) {
+                        if (!errorEl) {
+                            errorEl = document.createElement('span');
+                            errorEl.classList.add('text-danger');
+                            emailInput.parentNode.appendChild(errorEl);
+                        }
+                        errorEl.textContent = 'Email already registered';
+                    } else if (errorEl) {
+                        errorEl.textContent = '';
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+
+            // --- Username Validation ---
+            usernameInput.addEventListener('input', async () => {
+                const usernameVal = usernameInput.value.trim();
+
+                if (usernameVal.length > 0 && usernameVal.length < 4) {
+                    let errorEl = usernameInput.parentNode.querySelector('.text-danger');
+                    if (!errorEl) {
+                        errorEl = document.createElement('span');
+                        errorEl.classList.add('text-danger');
+                        usernameInput.parentNode.appendChild(errorEl);
+                    }
+                    errorEl.textContent = 'Username must be at least 4 characters long';
+                    return;
+                }
+
+                if (usernameVal.length < 4) return;
+
+                try {
+                    const response = await fetch(`/Account/CheckUsername?username=${encodeURIComponent(usernameVal)}`);
+                    if (!response.ok) return;
+                    const result = await response.json();
+
+                    let errorEl = usernameInput.parentNode.querySelector('.text-danger');
+                    if (result.exists) {
+                        if (!errorEl) {
+                            errorEl = document.createElement('span');
+                            errorEl.classList.add('text-danger');
+                            usernameInput.parentNode.appendChild(errorEl);
+                        }
+                        errorEl.textContent = 'Username already taken';
+                    } else if (errorEl && errorEl.textContent === 'Username already taken') {
+                        errorEl.textContent = '';
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            });
+
+            // --- Password Strength ---
+            passwordInput.addEventListener('input', () => {
+                const val = passwordInput.value;
+                const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+                let errorEl = passwordInput.parentNode.querySelector('.text-danger');
+
+                if (!regex.test(val)) {
+                    if (!errorEl) {
+                        errorEl = document.createElement('span');
+                        errorEl.classList.add('text-danger');
+                        passwordInput.parentNode.appendChild(errorEl);
+                    }
+                    errorEl.textContent = 'Password must be 8+ chars, include uppercase, lowercase, number, and special char.';
+                } else if (errorEl) {
+                    errorEl.textContent = '';
+                }
+            });
+
+            // --- Phone Number Validation ---
+            async function checkPhoneNumber(phoneNumber) {
+                if (!phoneNumber) {
+                    phoneFeedback.textContent = '';
+                    phoneFeedback.className = '';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/Account/CheckPhoneNumber?phoneNumber=${encodeURIComponent(phoneNumber)}`);
+                    if (!response.ok) return;
+                    const result = await response.json();
+
+                    if (result.exists) {
+                        phoneFeedback.textContent = '❌ This phone number is already registered.';
+                        phoneFeedback.className = 'text-danger';
+                    } else {
+                        phoneFeedback.textContent = '✅ This phone number is available.';
+                        phoneFeedback.className = 'text-success';
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+
+            phoneInput.addEventListener('input', () => {
+                const phoneNumber = phoneInput.value.trim();
+                clearTimeout(phoneInput.delay);
+                phoneInput.delay = setTimeout(() => checkPhoneNumber(phoneNumber), 500);
+            });
+
+            // --- Hide suggestions when clicking outside ---
+            document.addEventListener('click', (e) => {
+                const container = document.getElementById('username-suggestions');
+                if (container && !container.contains(e.target) && e.target !== usernameInput) {
+                    container.style.display = 'none';
+                }
+            });
+        });
+
+        // Auto-hide TempData messages
+        setTimeout(() => {
+            document.getElementById("successMessage")?.remove();
+            document.getElementById("errorMessage")?.remove();
+        }, 5000);
+    </script>
+</body>
+</html>

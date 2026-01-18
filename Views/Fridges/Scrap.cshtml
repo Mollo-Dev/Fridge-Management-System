@@ -1,0 +1,111 @@
+﻿@model Fridge
+@using GRP_03_27.Enums;
+
+@{
+    ViewData["Title"] = "Scrap Fridge";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-trash"></i> @ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">Confirm Scrap Action</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning:</strong> This action cannot be undone. The fridge will be marked as scrapped and removed from available inventory.
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Model:</strong> @Model.Model
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Serial Number:</strong> @Model.SerialNumber
+                    </div>
+                </div>
+
+                @if (Model.Customer != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        This fridge is currently allocated to <strong>@Model.Customer.BusinessName</strong>.
+                        You must deallocate it before scrapping.
+                    </div>
+                }
+
+                <form asp-action="Scrap" method="post">
+                    <input type="hidden" name="id" value="@Model.FridgeId" />
+
+                    <div class="mb-3">
+                        <label for="scrapReason" class="form-label">Scrap Reason *</label>
+                        <textarea name="scrapReason" class="form-control" rows="4" required
+                                  placeholder="Please provide a detailed reason for scrapping this fridge (minimum 5 characters)..."></textarea>
+                        <div class="form-text">This reason will be recorded in the fridge's history.</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">Cancel</a>
+                        @if (Model.Customer == null)
+                        {
+                            <button type="submit" class="btn btn-danger"
+                                    onclick="return confirm('Are you sure you want to scrap this fridge? This action cannot be undone.')">
+                                <i class="fas fa-trash"></i> Confirm Scrap
+                            </button>
+                        }
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Fridge Information</h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    <strong>Status:</strong>
+                    <span class="badge @GetStatusBadgeClass(Model.Status)">@Model.Status</span>
+                </p>
+                <p><strong>Supplier:</strong> @Model.Supplier?.Name</p>
+                <p><strong>Purchase Date:</strong> @Model.PurchaseDate.ToString("yyyy-MM-dd")</p>
+                <p>
+                    <strong>Customer:</strong>
+                    @if (Model.Customer != null)
+                    {
+                        @Model.Customer.BusinessName
+                    }
+                    else
+                    {
+                        <span class="text-muted">Not allocated</span>
+                    }
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-success",
+            FridgeStatus.Allocated => "bg-primary",
+            FridgeStatus.Faulty => "bg-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning",
+            FridgeStatus.Scrapped => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+}

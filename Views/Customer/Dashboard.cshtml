@@ -1,0 +1,247 @@
+﻿@model GRP_03_27.Models.ViewModels.CustomerDashboardViewModel
+@using GRP_03_27.Enums
+@{
+    ViewData["Title"] = "Customer Dashboard";
+    Layout = "_CustomerLayout";
+}
+
+<div class="container-fluid">
+    <!-- Welcome Header -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="welcome-card bg-white rounded shadow-sm p-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h2 class="fw-bold text-primary mb-2">Welcome back!</h2>
+                        <p class="text-muted mb-0">Here's an overview of your beverage storage systems and recent activity.</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="quick-report">
+                            <a href="@Url.Action("ReportFault", "Customer")" class="btn btn-primary btn-lg">
+                                <i class="bi bi-exclamation-triangle me-2"></i>Report Fault
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row g-4 mb-5">
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4>@Model.ActiveFridges</h4>
+                        <p>Active Fridges</p>
+                    </div>
+                    <i class="bi bi-thermometer-snow fs-2 text-primary"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4>@Model.PendingFaultReports</h4>
+                        <p>Pending Faults</p>
+                    </div>
+                    <i class="bi bi-tools fs-2 text-warning"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4>@Model.InProgressFaultReports</h4>
+                        <p>In Progress</p>
+                    </div>
+                    <i class="bi bi-calendar-check fs-2 text-info"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="stats-card">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4>@Model.ResolvedFaultReports</h4>
+                        <p>Resolved Issues</p>
+                    </div>
+                    <i class="bi bi-check-circle fs-2 text-success"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h4 class="fw-bold mb-3 text-primary">Quick Actions</h4>
+        </div>
+    </div>
+
+    <!-- First Row of Quick Actions -->
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="action-card text-center p-4 rounded shadow-sm">
+                <i class="bi bi-exclamation-triangle-fill text-warning fs-1 mb-3"></i>
+                <h5>Report Fault</h5>
+                <p class="text-muted">Report issues with your fridge systems</p>
+                <a href="@Url.Action("ReportFault", "Customer")" class="btn btn-outline-primary">Report Now</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="action-card text-center p-4 rounded shadow-sm">
+                <i class="bi bi-calendar-plus text-info fs-1 mb-3"></i>
+                <h5>Request Fridge</h5>
+                <p class="text-muted">Request additional fridge units</p>
+                <a href="@Url.Action("RequestNewFridge", "Customer")" class="btn btn-outline-primary">Request</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="action-card text-center p-4 rounded shadow-sm">
+                <i class="bi bi-list-check text-success fs-1 mb-3"></i>
+                <h5>My Faults</h5>
+                <p class="text-muted">View reported fault history</p>
+                <a href="@Url.Action("MyFaultReports", "Customer")" class="btn btn-outline-primary">View All</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Second Row of Quick Actions -->
+    <div class="row g-4 mt-2">
+        <div class="col-lg-4 col-md-6">
+            <div class="action-card text-center p-4 rounded shadow-sm">
+                <i class="bi bi-clock-history text-secondary fs-1 mb-3"></i>
+                <h5>Maintenance</h5>
+                <p class="text-muted">Upcoming maintenance schedules</p>
+                <a href="@Url.Action("UpcomingMaintenance", "Customer")" class="btn btn-outline-primary">View Schedule</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="action-card text-center p-4 rounded shadow-sm">
+                <i class="bi bi-cart-plus text-primary fs-1 mb-3"></i>
+                <h5>My Fridges</h5>
+                <p class="text-muted">View your allocated fridges</p>
+                <a href="@Url.Action("MyFridges", "Customer")" class="btn btn-outline-primary">View Fridges</a>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="action-card text-center p-4 rounded shadow-sm">
+                <i class="bi bi-tools text-warning fs-1 mb-3"></i>
+                <h5>Fridge Services</h5>
+                <p class="text-muted">View maintenance services history</p>
+                <a href="@Url.Action("MaintenanceHistory", "Customer")" class="btn btn-outline-primary">View Services</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Completion Alert -->
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="alert alert-info d-flex align-items-center">
+                    <i class="bi bi-info-circle me-3 fs-4"></i>
+                    <div>
+                        <strong>Profile Incomplete:</strong> @TempData["InfoMessage"]
+                        <a href="@Url.Action("Profile", "Customer")" class="alert-link ms-2">Complete your profile now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Recent Activity -->
+    <div class="row mt-5">
+        <div class="col-lg-8">
+            <div class="activity-card bg-white rounded shadow-sm p-4">
+                <h5 class="fw-bold mb-4 text-primary">Recent Activity</h5>
+                <div class="list-group list-group-flush">
+                    @if (Model.RecentFaultReports != null && Model.RecentFaultReports.Any())
+                    {
+                        foreach (var fault in Model.RecentFaultReports.Take(5))
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                                    <span>Fault reported for @fault.Fridge?.Model - @fault.Fridge?.SerialNumber</span>
+                                </div>
+                                <small class="text-muted">@fault.DateReported.ToString("MMM dd, yyyy")</small>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <i class="bi bi-inbox text-muted fs-1 mb-3"></i>
+                            <p class="text-muted">No recent activity</p>
+                            <small class="text-muted">Your reported faults and maintenance requests will appear here</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="support-card bg-primary text-white rounded shadow-sm p-4">
+                <h5 class="fw-bold mb-3">Need Help?</h5>
+                <p class="mb-4">Our support team is here to assist you with any issues or questions.</p>
+                <div class="support-contacts">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-telephone me-3"></i>
+                        <span>+27 12 345 6789</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="bi bi-envelope me-3"></i>
+                        <span>support@beveragestorage.com</span>
+                    </div>
+                </div>
+                <a href="mailto:support@beveragestorage.com" class="btn btn-light w-100">
+                    <i class="bi bi-headset me-2"></i>Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .welcome-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        border-left: 4px solid var(--primary);
+    }
+
+    .stats-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        border-left: 4px solid var(--primary);
+        transition: transform 0.3s ease;
+    }
+
+        .stats-card:hover {
+            transform: translateY(-2px);
+        }
+
+    .action-card {
+        background: white;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+    .activity-card, .support-card {
+        height: 100%;
+    }
+
+    .support-card {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+    }
+</style>

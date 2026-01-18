@@ -1,0 +1,110 @@
+@model Customer
+@using GRP_03_27.Enums;
+
+@{
+    ViewData["Title"] = "Admin - Customer Details";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">
+                    <i class="fas fa-user"></i> Customer Details
+                </h3>
+                <div>
+                    <a asp-action="Index" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Business Name:</dt>
+                    <dd class="col-sm-9">@Model.BusinessName</dd>
+
+                    <dt class="col-sm-3">Contact Person:</dt>
+                    <dd class="col-sm-9">@Model.ContactPerson</dd>
+
+                    <dt class="col-sm-3">Phone Number:</dt>
+                    <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+                    <dt class="col-sm-3">Email:</dt>
+                    <dd class="col-sm-9">@Model.Email</dd>
+
+                    <dt class="col-sm-3">Address:</dt>
+                    <dd class="col-sm-9">@Model.PhysicalAddress</dd>
+
+                    <dt class="col-sm-3">Customer Type:</dt>
+                    <dd class="col-sm-9">
+                        <span class="badge bg-info">@Model.Type</span>
+                    </dd>
+
+                    <dt class="col-sm-3">Status:</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Registration Date:</dt>
+                    <dd class="col-sm-9">@Model.RegistrationDate.ToString("yyyy-MM-dd")</dd>
+
+                    <dt class="col-sm-3">Last Updated:</dt>
+                    <dd class="col-sm-9">@Model.LastUpdated.ToString("yyyy-MM-dd HH:mm")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">
+                    <i class="fas fa-refrigerator"></i> Assigned Fridges
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Fridges.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var fridge in Model.Fridges)
+                        {
+                            <div class="list-group-item">
+                                <h6 class="mb-1">@fridge.Model</h6>
+                                <small class="text-muted">Serial: @fridge.SerialNumber</small>
+                                <div>
+                                    <span class="badge @GetStatusBadgeClass(fridge.Status)">@fridge.Status</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No fridges assigned to this customer.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-success",
+            FridgeStatus.Allocated => "bg-primary",
+            FridgeStatus.Faulty => "bg-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning",
+            FridgeStatus.Scrapped => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+}

@@ -1,0 +1,275 @@
+﻿@model GRP_03_27.Models.MaintenanceRecord
+@{
+    ViewData["Title"] = "Maintenance Details";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Maintenance Details</h1>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">Back to List</span>
+            </a>
+            @if (Model.Status == GRP_03_27.Enums.MaintenanceStatus.Scheduled)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-warning btn-icon-split ml-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-edit"></i>
+                    </span>
+                    <span class="text">Edit</span>
+                </a>
+                <a asp-action="Complete" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-success btn-icon-split ml-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-check"></i>
+                    </span>
+                    <span class="text">Complete</span>
+                </a>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Maintenance Information</h6>
+                    <div>
+                        @{
+                            var statusBadgeClass = Model.Status switch
+                            {
+                                GRP_03_27.Enums.MaintenanceStatus.Scheduled => "badge-primary",
+                                GRP_03_27.Enums.MaintenanceStatus.InProgress => "badge-warning",
+                                GRP_03_27.Enums.MaintenanceStatus.Completed => "badge-success",
+                                GRP_03_27.Enums.MaintenanceStatus.Cancelled => "badge-secondary",
+                                GRP_03_27.Enums.MaintenanceStatus.Rescheduled => "badge-info",
+                                _ => "badge-secondary"
+                            };
+                        }
+                        <span class="badge @statusBadgeClass">@Model.Status</span>
+                        @if (Model.IsOverdue)
+                        {
+                            <span class="badge badge-danger">Overdue</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Maintenance ID:</dt>
+                                <dd class="col-sm-8">@Model.MaintenanceRecordId</dd>
+
+                                <dt class="col-sm-4">Fridge:</dt>
+                                <dd class="col-sm-8">@Model.Fridge?.Model (SN: @Model.Fridge?.SerialNumber)</dd>
+
+                                <dt class="col-sm-4">Customer:</dt>
+                                <dd class="col-sm-8">@Model.Fridge?.Customer?.BusinessName</dd>
+
+                                <dt class="col-sm-4">Maintenance Type:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge badge-info">@Model.MaintenanceType</span>
+                                </dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Scheduled Date:</dt>
+                                <dd class="col-sm-8">@Model.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                                <dt class="col-sm-4">Performed Date:</dt>
+                                <dd class="col-sm-8">@(Model.PerformedDate?.ToString("MMM dd, yyyy HH:mm") ?? "Not performed")</dd>
+
+                                <dt class="col-sm-4">Technician:</dt>
+                                <dd class="col-sm-8">@Model.AssignedTechnician?.FirstName @Model.AssignedTechnician?.LastName</dd>
+
+                                <dt class="col-sm-4">Priority:</dt>
+                                <dd class="col-sm-8">
+                                    <span class="badge badge-@(Model.Priority == GRP_03_27.Enums.PriorityLevel.High ? "danger" : Model.Priority == GRP_03_27.Enums.PriorityLevel.Medium ? "warning" : "info")">
+                                        @Model.Priority
+                                    </span>
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="font-weight-bold">Technician Notes</h6>
+                            <div class="border rounded p-3 bg-light">
+                                @if (!string.IsNullOrEmpty(Model.TechnicianNotes))
+                                {
+                                    <p class="mb-0">@Model.TechnicianNotes</p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mb-0">No notes provided.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="font-weight-bold">Service Checklist</h6>
+                            <div class="border rounded p-3 bg-light">
+                                @if (!string.IsNullOrEmpty(Model.ServiceChecklist))
+                                {
+                                    <p class="mb-0">@Model.ServiceChecklist</p>
+                                }
+                                else
+                                {
+                                    <p class="text-muted mb-0">No checklist provided.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (Model.Status == GRP_03_27.Enums.MaintenanceStatus.Completed)
+                    {
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6 class="font-weight-bold">Completion Details</h6>
+                                <dl class="row">
+                                    <dt class="col-sm-4">Parts Used:</dt>
+                                    <dd class="col-sm-8">@(Model.PartsUsed ?? "None")</dd>
+
+                                    <dt class="col-sm-4">Total Cost:</dt>
+                                    <dd class="col-sm-8">R @Model.TotalCost.ToString("F2")</dd>
+
+                                    <dt class="col-sm-4">Actual Duration:</dt>
+                                    <dd class="col-sm-8">@(Model.ActualDuration?.ToString("F1") ?? "N/A") hours</dd>
+                                </dl>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Actions Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        @if (Model.Status == GRP_03_27.Enums.MaintenanceStatus.Scheduled)
+                        {
+                            <a asp-action="Complete" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-success btn-block">
+                                <i class="fas fa-check-circle mr-2"></i>Complete Maintenance
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-warning btn-block">
+                                <i class="fas fa-edit mr-2"></i>Edit Schedule
+                            </a>
+                            <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#cancelModal">
+                                <i class="fas fa-times-circle mr-2"></i>Cancel Maintenance
+                            </button>
+                        }
+                        <a href="@Url.Action("Details", "Fridges", new { id = Model.FridgeId })" class="btn btn-info btn-block">
+                            <i class="fas fa-refrigerator mr-2"></i>View Fridge Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Timeline</h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item @(Model.Status == GRP_03_27.Enums.MaintenanceStatus.Completed ? "completed" : "active")">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h6 class="font-weight-bold">Scheduled</h6>
+                                <p class="text-muted small">@Model.ScheduledDate.ToString("MMM dd, yyyy HH:mm")</p>
+                            </div>
+                        </div>
+                        @if (Model.Status == GRP_03_27.Enums.MaintenanceStatus.Completed && Model.PerformedDate.HasValue)
+                        {
+                            <div class="timeline-item completed">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h6 class="font-weight-bold">Completed</h6>
+                                    <p class="text-muted small">@Model.PerformedDate.Value.ToString("MMM dd, yyyy HH:mm")</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Maintenance Modal -->
+@if (Model.Status == GRP_03_27.Enums.MaintenanceStatus.Scheduled)
+{
+    <div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelModalLabel">Cancel Maintenance</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form asp-action="Cancel" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.MaintenanceRecordId" />
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="cancellationReason" class="control-label">Cancellation Reason</label>
+                            <textarea name="cancellationReason" class="form-control" rows="3" placeholder="Please provide a reason for cancellation..." required minlength="5"></textarea>
+                            <small class="form-text text-muted">Minimum 5 characters required.</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #e74a3b;
+        border: 3px solid #fff;
+    }
+
+    .timeline-item.active .timeline-marker {
+        background-color: #f6c23e;
+    }
+
+    .timeline-item.completed .timeline-marker {
+        background-color: #1cc88a;
+    }
+
+    .timeline-content {
+        padding-bottom: 10px;
+    }
+</style>

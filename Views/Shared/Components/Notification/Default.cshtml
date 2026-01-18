@@ -1,0 +1,170 @@
+@model GRP_03_27.Components.NotificationViewModel
+@using GRP_03_27.Enums
+
+<div class="notification-dropdown">
+    <div class="dropdown">
+        <button class="btn btn-outline-secondary dropdown-toggle position-relative" type="button" 
+                data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-bell"></i>
+            @if (Model.UnreadCount > 0)
+            {
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    @Model.UnreadCount
+                </span>
+            }
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end notification-dropdown-menu">
+            <li class="dropdown-header d-flex justify-content-between align-items-center">
+                <span>Notifications</span>
+                @if (Model.UnreadCount > 0)
+                {
+                    <button class="btn btn-sm btn-outline-primary" onclick="markAllAsRead()">
+                        Mark all read
+                    </button>
+                }
+            </li>
+            @if (Model.Notifications.Any())
+            {
+                @foreach (var notification in Model.Notifications)
+                {
+                    <li>
+                        <div class="notification-item @(notification.IsRead ? "" : "unread")" 
+                             onclick="markAsRead(@notification.NotificationId)">
+                            <div class="d-flex align-items-start">
+                                <div class="notification-icon me-2">
+                                    @switch (notification.Type)
+                                    {
+                                        case NotificationType.Fault:
+                                            <i class="bi bi-exclamation-triangle text-warning"></i>
+                                            break;
+                                        case NotificationType.Maintenance:
+                                            <i class="bi bi-tools text-info"></i>
+                                            break;
+                                        case NotificationType.Purchase:
+                                            <i class="bi bi-cart-plus text-success"></i>
+                                            break;
+                                        case NotificationType.Warning:
+                                            <i class="bi bi-exclamation-circle text-warning"></i>
+                                            break;
+                                        case NotificationType.Error:
+                                            <i class="bi bi-x-circle text-danger"></i>
+                                            break;
+                                        default:
+                                            <i class="bi bi-info-circle text-primary"></i>
+                                            break;
+                                    }
+                                </div>
+                                <div class="notification-content flex-grow-1">
+                                    <div class="notification-message">@notification.Message</div>
+                                    <div class="notification-time text-muted small">
+                                        @notification.SentDate.ToString("MMM dd, HH:mm")
+                                    </div>
+                                </div>
+                                @if (!notification.IsRead)
+                                {
+                                    <div class="notification-dot"></div>
+                                }
+                            </div>
+                        </div>
+                    </li>
+                }
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-center" href="#">View all notifications</a></li>
+            }
+            else
+            {
+                <li class="dropdown-item-text text-center text-muted">
+                    No notifications
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<style>
+    .notification-dropdown-menu {
+        width: 350px;
+        max-height: 400px;
+        overflow-y: auto;
+    }
+
+    .notification-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+        transition: background-color 0.2s;
+    }
+
+    .notification-item:hover {
+        background-color: #f8f9fa;
+    }
+
+    .notification-item.unread {
+        background-color: #e3f2fd;
+        font-weight: 500;
+    }
+
+    .notification-icon {
+        font-size: 1.2em;
+        margin-top: 2px;
+    }
+
+    .notification-content {
+        min-width: 0;
+    }
+
+    .notification-message {
+        font-size: 0.9em;
+        line-height: 1.3;
+        margin-bottom: 3px;
+    }
+
+    .notification-time {
+        font-size: 0.75em;
+    }
+
+    .notification-dot {
+        width: 8px;
+        height: 8px;
+        background-color: #007bff;
+        border-radius: 50%;
+        margin-top: 8px;
+        margin-left: 5px;
+    }
+</style>
+
+<script>
+    function markAsRead(notificationId) {
+        fetch(`/api/notifications/${notificationId}/mark-read`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Reload the notification component
+                location.reload();
+            }
+        })
+        .catch(error => console.error('Error marking notification as read:', error));
+    }
+
+    function markAllAsRead() {
+        fetch('/api/notifications/mark-all-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value
+            }
+        })
+        .then(response => {
+            if (response.ok) {
+                // Reload the notification component
+                location.reload();
+            }
+        })
+        .catch(error => console.error('Error marking all notifications as read:', error));
+    }
+</script>

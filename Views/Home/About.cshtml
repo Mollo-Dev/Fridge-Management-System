@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+    <style>
+        .team-img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+
+        .feature-item {
+            transition: transform 0.3s ease;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 100%;
+        }
+
+            .feature-item:hover {
+                transform: translateY(-5px);
+            }
+
+        .card-body {
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+}
+
+<!-- About Header -->
+<div class="container-fluid bg-primary text-white py-5 text-center">
+    <h1 class="fw-bold">About Beverage Storage Solutions</h1>
+    <p class="lead mb-0">
+        A web-based system for efficient fridge and customer management
+    </p>
+</div>
+
+<!-- Company Overview -->
+<div class="container py-5">
+    <div class="row align-items-center">
+        <div class="col-lg-6 text-center mt-4 mt-lg-0">
+            <img src="~/Images/img6.png"
+                 alt="About Beverage Storage Solutions"
+                 class="img-fluid rounded shadow-lg"
+                 style="max-height: 350px; max-width: 100%; width: auto; object-fit: contain;">
+        </div>
+        <div class="col-lg-6">
+            <h3 class="fw-bold text-primary mb-3">Who We Are</h3>
+            <p>
+                Beverage Storage Solutions is a digital platform created to help beverage businesses efficiently manage
+                customer information, fridge inventory, and maintenance operations. The system replaces manual record-keeping
+                methods, providing a structured, reliable, and transparent way to monitor fridges and ensure consistent service.
+            </p>
+            <p>
+                Our project focuses on automating the management process between customers, technicians, and administrators.
+                This enables better communication, faster issue resolution, and improved operational control.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Subsystems Section -->
+<div class="container-fluid bg-light py-5">
+    <div class="container text-center mb-5">
+        <h2 class="fw-bold text-primary">System Overview</h2>
+        <p class="text-dark">The system consists of three fully functional subsystems:</p>
+    </div>
+
+    <div class="row g-4 text-center">
+        <div class="col-md-4">
+            <div class="p-4 rounded shadow-sm bg-white h-100 feature-item">
+                <i class="fa fa-user-cog fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold">Customer Management</h5>
+                <p>
+                    Manages customer records, fridge allocations, and inventory tracking. Ensures customer and fridge information is always up to date.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 rounded shadow-sm bg-white h-100 feature-item">
+                <i class="fa fa-exclamation-triangle fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold">Fridge Fault</h5>
+                <p>
+                    Streamlines fault reporting and communication between customers and technicians. Tracks issues until resolved.
+                </p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="p-4 rounded shadow-sm bg-white h-100 feature-item">
+                <i class="fa fa-tools fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold">Fridge Maintenance</h5>
+                <p>
+                    Manages maintenance scheduling, fridge servicing, and history tracking. Technicians record completed tasks, and customers view maintenance history.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Team Section -->
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-primary">Meet The Team</h2>
+        <p class="text-dark">Our project was developed by three dedicated professionals working under <strong>The Algorithmics</strong>.</p>
+    </div>
+
+    <div class="row text-center g-4">
+        <div class="col-md-4">
+            <div class="card shadow border-0 feature-item">
+                <div class="card-body">
+                    <!-- Replace with your image from wwwroot/Images -->
+                    <img src="~/Images/lebo.jpg" alt="Mr Lebohang Mollo" class="team-img">
+                    <h5 class="fw-bold mt-3">Mr Lebohang Mollo</h5>
+                    <p class="text-muted">Customer Relations Manager</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow border-0 feature-item">
+                <div class="card-body">
+                    <!-- Replace with your image from wwwroot/Images -->
+                    <img src="~/Images/lisa.jpg" alt="Ms Lisakhanya Mtuzula" class="team-img">
+                    <h5 class="fw-bold mt-3">Ms Lisakhanya Mtuzula</h5>
+                    <p class="text-muted">Fridge Maintenance Supervisor</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card shadow border-0 feature-item">
+                <div class="card-body">
+                    <!-- Replace with your image from wwwroot/Images -->
+                    <img src="~/Images/manase.jpg" alt="Ms Manase Mkwedi" class="team-img">
+                    <h5 class="fw-bold mt-3">Ms Manase Mkwedi</h5>
+                    <p class="text-muted">Operations Coordinator</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mission Section -->
+<div class="container-fluid py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Our Mission</h2>
+        <p class="lead mb-0">
+            To modernize fridge management processes and create a more efficient, transparent,
+            and customer-centered experience for beverage providers and their clients.
+        </p>
+    </div>
+</div>

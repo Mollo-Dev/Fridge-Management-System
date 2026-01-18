@@ -1,0 +1,133 @@
+﻿@model GRP_03_27.Models.ViewModels.CompleteMaintenanceViewModel
+@{
+    ViewData["Title"] = "Complete Maintenance";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Complete Maintenance</h1>
+        <a asp-action="Index" class="btn btn-secondary btn-icon-split">
+            <span class="icon text-white-50">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text">Back to List</span>
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 bg-success">
+                    <h6 class="m-0 font-weight-bold text-white">Complete Maintenance Record</h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Complete" method="post">
+                        <input type="hidden" asp-for="MaintenanceRecordId" />
+                        <input type="hidden" asp-for="FridgeId" />
+
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <strong>Fridge:</strong> @Model.FridgeDetails
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Customer:</strong> @Model.CustomerName
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <strong>Scheduled Date:</strong> @Model.ScheduledDate.ToString("MMM dd, yyyy HH:mm")
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Maintenance Type:</strong> @Model.MaintenanceType
+                            </div>
+                        </div>
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="PerformedDate" class="control-label"></label>
+                            <input asp-for="PerformedDate" class="form-control" />
+                            <span asp-validation-for="PerformedDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="UpdatedTechnicianNotes" class="control-label"></label>
+                            <textarea asp-for="UpdatedTechnicianNotes" class="form-control" rows="4" placeholder="Describe the work performed...">@Model.TechnicianNotes</textarea>
+                            <span asp-validation-for="UpdatedTechnicianNotes" class="text-danger"></span>
+                            <small class="form-text text-muted">Update the technician notes with completion details.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CompletedChecklist" class="control-label"></label>
+                            <textarea asp-for="CompletedChecklist" class="form-control" rows="4" placeholder="List completed checklist items...">@Model.ServiceChecklist</textarea>
+                            <span asp-validation-for="CompletedChecklist" class="text-danger"></span>
+                            <small class="form-text text-muted">Update the service checklist with completion status.</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PartsUsed" class="control-label"></label>
+                            <textarea asp-for="PartsUsed" class="form-control" rows="2" placeholder="List any parts used during maintenance..."></textarea>
+                            <span asp-validation-for="PartsUsed" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TotalCost" class="control-label"></label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">R</span>
+                                </div>
+                                <input asp-for="TotalCost" class="form-control" type="number" step="0.01" min="0" max="10000" />
+                            </div>
+                            <span asp-validation-for="TotalCost" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-check-circle"></i>
+                                </span>
+                                <span class="text">Complete Maintenance</span>
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-secondary">Cancel</a>
+                            <a asp-controller="FaultReports" asp-action="CreateFromMaintenance" asp-route-fridgeId="@Model.FridgeId" class="btn btn-warning">
+                                <i class="fas fa-exclamation-triangle"></i> Report Fault
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">Completion Guidelines</h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>Accurate Reporting</strong>
+                        <p class="text-muted small">Ensure all work performed is accurately documented for future reference.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Parts Documentation</strong>
+                        <p class="text-muted small">Record all parts used for inventory tracking and billing purposes.</p>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Cost Tracking</strong>
+                        <p class="text-muted small">Include all costs for accurate financial reporting and customer billing.</p>
+                    </div>
+                    <div>
+                        <strong>Quality Assurance</strong>
+                        <p class="text-muted small">Verify that all maintenance tasks have been completed to standard.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

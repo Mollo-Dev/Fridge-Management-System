@@ -1,0 +1,100 @@
+﻿@model GRP_03_27.Models.ViewModels.UpdateFaultReportViewModel
+@using GRP_03_27.Enums
+@{
+    ViewData["Title"] = "Update Fault Report";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-edit me-2"></i>@ViewData["Title"]
+                </h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="Update">
+                    <input type="hidden" asp-for="FaultReportId" />
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Status" class="control-label"></label>
+                        <select asp-for="Status" class="form-control" asp-items="Html.GetEnumSelectList<FaultStatus>()"></select>
+                        <span asp-validation-for="Status" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="DiagnosisDetails" class="control-label"></label>
+                        <textarea asp-for="DiagnosisDetails" class="form-control" rows="3"
+                                  placeholder="Enter diagnosis details..."></textarea>
+                        <span asp-validation-for="DiagnosisDetails" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="ScheduledDate" class="control-label"></label>
+                        <input asp-for="ScheduledDate" class="form-control" type="date" />
+                        <span asp-validation-for="ScheduledDate" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AssignedTechnicianId" class="control-label"></label>
+                        <select asp-for="AssignedTechnicianId" class="form-control">
+                            <option value="">-- Unassigned --</option>
+                            @if (Model.AvailableTechnicians != null)
+                            {
+                                foreach (var tech in Model.AvailableTechnicians)
+                                {
+                                    <option value="@tech.Id">@tech.FullName</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="AssignedTechnicianId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="PartsRequired" class="control-label"></label>
+                        <input asp-for="PartsRequired" class="form-control" placeholder="List required parts..." />
+                        <span asp-validation-for="PartsRequired" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="RepairCost" class="control-label"></label>
+                        <input asp-for="RepairCost" class="form-control" type="number" step="0.01" placeholder="0.00" />
+                        <span asp-validation-for="RepairCost" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="InternalNotes" class="control-label"></label>
+                        <textarea asp-for="InternalNotes" class="form-control" rows="2"
+                                  placeholder="Internal notes for technicians..."></textarea>
+                        <span asp-validation-for="InternalNotes" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <div class="form-check">
+                            <input asp-for="ReplacementApproved" class="form-check-input" />
+                            <label asp-for="ReplacementApproved" class="form-check-label fw-bold text-success">
+                                Approve Replacement Request
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">
+                            Check this to approve the customer's replacement request.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save"></i> Update Report
+                        </button>
+                        <a asp-action="Details" asp-route-id="@Model.FaultReportId" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

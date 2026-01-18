@@ -1,0 +1,95 @@
+﻿@model GRP_03_27.Models.ViewModels.CreateFaultReportViewModel
+@{
+    ViewData["Title"] = "Report Fault";
+    Layout = "_CustomerLayout";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>@ViewData["Title"]
+                </h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="ReportFault">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Need a new fridge?</strong> If your fridge cannot be repaired, you can request a replacement below.
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="FridgeId" class="control-label"></label>
+                        <select asp-for="FridgeId" class="form-control" required>
+                            <option value="">-- Select Fridge --</option>
+                            @if (Model.AvailableFridges != null)
+                            {
+                                foreach (var fridge in Model.AvailableFridges)
+                                {
+                                    <option value="@fridge.FridgeId">@fridge.Model (Serial: @fridge.SerialNumber) - Status: @fridge.Status</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="FridgeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="4"
+                                  placeholder="Please describe the issue with your fridge in detail. Be as specific as possible to help our technicians diagnose the problem quickly..." required></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <small class="form-text text-muted">
+                            Include details like unusual noises, temperature issues, error messages, etc.
+                        </small>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="CustomerNotes" class="control-label"></label>
+                        <textarea asp-for="CustomerNotes" class="form-control" rows="2"
+                                  placeholder="Any additional information that might help our technicians, such as preferred contact times or access instructions..."></textarea>
+                        <span asp-validation-for="CustomerNotes" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <div class="form-check">
+                            <input asp-for="RequestReplacement" class="form-check-input" id="replacementCheck" />
+                            <label asp-for="RequestReplacement" class="form-check-label fw-bold text-danger" for="replacementCheck">
+                                <i class="fas fa-exchange-alt me-1"></i>Request Replacement Fridge
+                            </label>
+                        </div>
+                        <small class="form-text text-muted">
+                            Check this if you believe the fridge cannot be repaired and needs to be replaced.
+                            Our team will assess your request and contact you.
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-paper-plane"></i> Submit Fault Report
+                        </button>
+                        <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.getElementById('replacementCheck').addEventListener('change', function() {
+            if (this.checked) {
+                if (!confirm('Are you sure you want to request a replacement? This should only be selected if the fridge cannot be repaired.')) {
+                    this.checked = false;
+                }
+            }
+        });
+    </script>
+}

@@ -1,0 +1,431 @@
+﻿@model GRP_03_27.Models.ViewModels.CustomerProfileViewModel
+@using GRP_03_27.Enums
+
+@{
+    ViewData["Title"] = "Complete Your Profile";
+    Layout = "_CustomerLayout";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="card-title">
+                    <i class="fas fa-user-plus me-2"></i>Complete Your Business Profile
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Welcome!</strong> Please complete your business profile to access all customer features.
+                </div>
+
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <form asp-action="Profile" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    
+                    <!-- Hidden field for CustomerId -->
+                    <input asp-for="CustomerId" type="hidden" />
+
+                    <!-- Business Information -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-building me-2"></i>Business Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label asp-for="BusinessName" class="form-label"></label>
+                                <input asp-for="BusinessName" class="form-control" required />
+                                <span asp-validation-for="BusinessName" class="text-danger"></span>
+                                <small class="form-text text-muted">Your registered business name</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="BusinessType" class="form-label"></label>
+                                        <select asp-for="BusinessType" class="form-control" asp-items="Html.GetEnumSelectList<CustomerType>()" required>
+                                            <option value="">-- Select Business Type --</option>
+                                        </select>
+                                        <span asp-validation-for="BusinessType" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3" id="otherBusinessTypeGroup" style="display: none;">
+                                        <label asp-for="OtherBusinessType" class="form-label">Specify Business Type</label>
+                                        <input asp-for="OtherBusinessType" class="form-control" />
+                                        <span asp-validation-for="OtherBusinessType" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-address-book me-2"></i>Contact Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-3">
+                                <label asp-for="ContactPerson" class="form-label"></label>
+                                <input asp-for="ContactPerson" class="form-control" required />
+                                <span asp-validation-for="ContactPerson" class="text-danger"></span>
+                                <small class="form-text text-muted">Primary contact person for your business</small>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="Email" class="form-label"></label>
+                                        <input asp-for="Email" class="form-control" required />
+                                        <span asp-validation-for="Email" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label asp-for="PhoneNumber" class="form-label"></label>
+                                        <input asp-for="PhoneNumber" class="form-control" required />
+                                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label asp-for="PhysicalAddress" class="form-label"></label>
+                                <div class="input-group">
+                                    <textarea asp-for="PhysicalAddress" id="PhysicalAddress" class="form-control" rows="3" required placeholder="Enter your business address..."></textarea>
+                                    <button type="button" class="btn btn-outline-secondary" id="autofillAddressBtn" title="Auto-fill address">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </button>
+                                </div>
+                                <span asp-validation-for="PhysicalAddress" class="text-danger"></span>
+                                <small class="form-text text-muted">Where your fridges will be located</small>
+                                <div id="addressSuggestions" class="address-suggestions" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle"></i> Update Profile
+                        </button>
+                        <a asp-action="Dashboard" asp-controller="Customer" class="btn btn-secondary btn-lg">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .address-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .address-suggestion {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #f1f3f4;
+        transition: background-color 0.2s ease;
+    }
+
+    .address-suggestion:hover {
+        background-color: #f8f9fa;
+    }
+
+    .address-suggestion:last-child {
+        border-bottom: none;
+    }
+
+    .form-group {
+        position: relative;
+    }
+</style>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Show/hide other business type field
+        document.getElementById('BusinessType').addEventListener('change', function() {
+            const otherGroup = document.getElementById('otherBusinessTypeGroup');
+            if (this.value === '2') { // CustomerType.Other = 2
+                otherGroup.style.display = 'block';
+                // Make field required when visible
+                otherGroup.querySelector('input').required = true;
+            } else {
+                otherGroup.style.display = 'none';
+                // Remove required when hidden
+                otherGroup.querySelector('input').required = false;
+                otherGroup.querySelector('input').value = '';
+            }
+        });
+
+        // Validate form before submission
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const businessType = document.getElementById('BusinessType').value;
+            const otherBusinessType = document.getElementById('OtherBusinessType');
+
+            if (businessType === '2' && (!otherBusinessType.value || otherBusinessType.value.trim() === '')) {
+                e.preventDefault();
+                alert('Please specify your business type when selecting "Other".');
+                otherBusinessType.focus();
+            }
+        });
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const businessTypeSelect = document.getElementById('BusinessType');
+            const otherGroup = document.getElementById('otherBusinessTypeGroup');
+            
+            if (businessTypeSelect.value === '2') {
+                otherGroup.style.display = 'block';
+                otherGroup.querySelector('input').required = true;
+            }
+        });
+
+        // Address autofill functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const addressInput = document.getElementById('PhysicalAddress');
+            const autofillBtn = document.getElementById('autofillAddressBtn');
+            const suggestionsDiv = document.getElementById('addressSuggestions');
+
+            // Address autofill button click
+            autofillBtn.addEventListener('click', function() {
+                if (navigator.geolocation) {
+                    autofillBtn.innerHTML = '<i class="bi bi-hourglass-split"></i>';
+                    autofillBtn.disabled = true;
+                    
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            // Reverse geocoding to get address
+                            const lat = position.coords.latitude;
+                            const lng = position.coords.longitude;
+                            
+                            // Use a simple reverse geocoding service (you can replace with a real one)
+                            fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lng}&localityLanguage=en`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.locality && data.city && data.countryName) {
+                                        const address = `${data.locality}, ${data.city}, ${data.countryName}`;
+                                        addressInput.value = address;
+                                        
+                                        // Update location in database
+                                        updateCustomerLocation(address, lat, lng);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Geocoding error:', error);
+                                    showAddressError('Unable to get address from location. Please enter manually.');
+                                })
+                                .finally(() => {
+                                    autofillBtn.innerHTML = '<i class="bi bi-geo-alt"></i>';
+                                    autofillBtn.disabled = false;
+                                });
+                        },
+                        function(error) {
+                            console.error('Geolocation error:', error);
+                            showAddressError('Unable to get your location. Please enter address manually.');
+                            autofillBtn.innerHTML = '<i class="bi bi-geo-alt"></i>';
+                            autofillBtn.disabled = false;
+                        }
+                    );
+                } else {
+                    showAddressError('Geolocation is not supported by this browser.');
+                }
+            });
+
+            // Enhanced address input suggestions with real-time autocomplete
+            let addressTimeout;
+            addressInput.addEventListener('input', function() {
+                clearTimeout(addressTimeout);
+                const query = this.value.trim();
+                
+                if (query.length > 2) {
+                    addressTimeout = setTimeout(() => {
+                        getAddressSuggestions(query);
+                    }, 300);
+                } else {
+                    hideAddressSuggestions();
+                }
+            });
+
+            function getAddressSuggestions(query) {
+                // Use OpenStreetMap Nominatim API for live address suggestions
+                const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query + ', South Africa')}&limit=6&addressdetails=1&countrycodes=za`;
+                
+                fetch(nominatimUrl)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const suggestions = data.map(result => {
+                                const address = result.display_name;
+                                return address;
+                            });
+                            showAddressSuggestions(suggestions);
+                        } else {
+                            // Fallback to static suggestions if API fails
+                            getFallbackSuggestions(query);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Geocoding API error:', error);
+                        // Fallback to static suggestions
+                        getFallbackSuggestions(query);
+                    });
+            }
+
+            function getFallbackSuggestions(query) {
+                const suggestions = [];
+                
+                // Handle specific street addresses like "51 Admiralty"
+                if (query.match(/^\d+\s+\w+/i)) {
+                    const streetMatch = query.match(/^(\d+)\s+(.+)/i);
+                    if (streetMatch) {
+                        const number = streetMatch[1];
+                        const street = streetMatch[2];
+                        
+                        suggestions.push(
+                            `${number} ${street}, Sandton, Johannesburg, South Africa`,
+                            `${number} ${street}, Rosebank, Johannesburg, South Africa`,
+                            `${number} ${street}, Sea Point, Cape Town, South Africa`,
+                            `${number} ${street}, Umhlanga, Durban, South Africa`,
+                            `${number} ${street}, Pretoria, South Africa`
+                        );
+                    }
+                }
+                
+                // Johannesburg area suggestions
+                if (query.toLowerCase().includes('johannesburg') || query.toLowerCase().includes('joburg') || 
+                    query.toLowerCase().includes('jhb') || query.toLowerCase().includes('gauteng') ||
+                    query.toLowerCase().includes('sandton') || query.toLowerCase().includes('rosebank')) {
+                    suggestions.push(
+                        'Sandton, Johannesburg, South Africa',
+                        'Rosebank, Johannesburg, South Africa',
+                        'Melville, Johannesburg, South Africa',
+                        'Randburg, Johannesburg, South Africa',
+                        'Midrand, Johannesburg, South Africa'
+                    );
+                }
+                
+                // Cape Town area suggestions
+                if (query.toLowerCase().includes('cape town') || query.toLowerCase().includes('capetown') || 
+                    query.toLowerCase().includes('western cape') || query.toLowerCase().includes('sea point') ||
+                    query.toLowerCase().includes('green point')) {
+                    suggestions.push(
+                        'Cape Town Central, Cape Town, South Africa',
+                        'Sea Point, Cape Town, South Africa',
+                        'Green Point, Cape Town, South Africa',
+                        'Claremont, Cape Town, South Africa',
+                        'Rondebosch, Cape Town, South Africa'
+                    );
+                }
+                
+                // Durban area suggestions
+                if (query.toLowerCase().includes('durban') || query.toLowerCase().includes('kwazulu') || 
+                    query.toLowerCase().includes('kzn') || query.toLowerCase().includes('umhlanga') ||
+                    query.toLowerCase().includes('berea')) {
+                    suggestions.push(
+                        'Durban Central, Durban, South Africa',
+                        'Umhlanga, Durban, South Africa',
+                        'Berea, Durban, South Africa',
+                        'Westville, Durban, South Africa',
+                        'Pinetown, Durban, South Africa'
+                    );
+                }
+                
+                // Filter and limit suggestions
+                const filteredSuggestions = suggestions
+                    .filter(suggestion => suggestion.toLowerCase().includes(query.toLowerCase()))
+                    .slice(0, 6);
+                
+                if (filteredSuggestions.length > 0) {
+                    showAddressSuggestions(filteredSuggestions);
+                } else {
+                    hideAddressSuggestions();
+                }
+            }
+
+            function showAddressSuggestions(suggestions) {
+                suggestionsDiv.innerHTML = '';
+                suggestions.forEach(suggestion => {
+                    const div = document.createElement('div');
+                    div.className = 'address-suggestion';
+                    div.textContent = suggestion;
+                    div.addEventListener('click', function() {
+                        addressInput.value = suggestion;
+                        hideAddressSuggestions();
+                    });
+                    suggestionsDiv.appendChild(div);
+                });
+                suggestionsDiv.style.display = 'block';
+            }
+
+            function hideAddressSuggestions() {
+                suggestionsDiv.style.display = 'none';
+            }
+
+            function showAddressError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-warning mt-2';
+                errorDiv.textContent = message;
+                addressInput.parentNode.parentNode.appendChild(errorDiv);
+                setTimeout(() => errorDiv.remove(), 5000);
+            }
+
+            function updateCustomerLocation(address, lat, lng) {
+                // Update customer location via AJAX
+                fetch('@Url.Action("UpdateLocationFromAddress", "Customer")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                    },
+                    body: `address=${encodeURIComponent(address)}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Location updated successfully');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error updating location:', error);
+                });
+            }
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!addressInput.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                    hideAddressSuggestions();
+                }
+            });
+        });
+    </script>
+}

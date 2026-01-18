@@ -1,0 +1,182 @@
+﻿@model FaultReport
+@using GRP_03_27.Enums
+@{
+    ViewData["Title"] = "Fault Report Details";
+    Layout = "_CustomerLayout";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Fault Report Details</h3>
+                <a asp-action="MyFaultReports" class="btn btn-secondary btn-sm">Back to List</a>
+            </div>
+            <div class="card-body">
+                <!-- Status Alert -->
+                @if (Model.Status == FaultStatus.Resolved || Model.Status == FaultStatus.Closed)
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <strong>This fault has been resolved!</strong> Thank you for your patience.
+                    </div>
+                }
+                else if (Model.IsOverdue)
+                {
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>This report is overdue.</strong> Our team is working to resolve it as soon as possible.
+                    </div>
+                }
+
+                <dl class="row">
+                    <dt class="col-sm-4">Report Date:</dt>
+                    <dd class="col-sm-8">@Model.DateReported.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                    <dt class="col-sm-4">Fridge:</dt>
+                    <dd class="col-sm-8">@Model.Fridge?.Model (Serial: @Model.Fridge?.SerialNumber)</dd>
+
+                    <dt class="col-sm-4">Current Status:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @GetStatusBadgeClass(Model.Status)">@Model.Status</span>
+                        @if (Model.IsOverdue)
+                        {
+                            <span class="badge bg-danger ms-2">Overdue</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">Days Since Report:</dt>
+                    <dd class="col-sm-8 @(Model.DaysSinceReport > 7 ? "text-danger fw-bold" : "")">
+                        @Model.DaysSinceReport days
+                    </dd>
+
+                    @if (!string.IsNullOrEmpty(Model.AssignedTechnicianId))
+                    {
+                        <dt class="col-sm-4">Assigned Technician:</dt>
+                        <dd class="col-sm-8">@Model.AssignedTechnician?.FullName</dd>
+                    }
+
+                    @if (Model.ScheduledDate.HasValue)
+                    {
+                        <dt class="col-sm-4">Scheduled Repair:</dt>
+                        <dd class="col-sm-8">
+                            @Model.ScheduledDate.Value.ToString("yyyy-MM-dd")
+                            @if (Model.ScheduledDate.Value.Date < DateTime.UtcNow.Date)
+                            {
+                                <span class="badge bg-warning ms-2">Past Due</span>
+                            }
+                            else if (Model.ScheduledDate.Value.Date == DateTime.UtcNow.Date)
+                            {
+                                <span class="badge bg-info ms-2">Today</span>
+                            }
+                        </dd>
+                    }
+
+                    @if (Model.RepairDate.HasValue)
+                    {
+                        <dt class="col-sm-4">Repair Completed:</dt>
+                        <dd class="col-sm-8">@Model.RepairDate.Value.ToString("yyyy-MM-dd")</dd>
+                    }
+                </dl>
+
+                <h5 class="mt-4 border-bottom pb-2">Fault Information</h5>
+
+                <div class="mb-3">
+                    <strong>Fault Description:</strong>
+                    <p class="border p-3 rounded bg-light mt-2">@Model.Description</p>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.CustomerNotes))
+                {
+                    <div class="mb-3">
+                        <strong>Your Additional Notes:</strong>
+                        <p class="border p-3 rounded bg-light mt-2">@Model.CustomerNotes</p>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.DiagnosisDetails))
+                {
+                    <div class="mb-3">
+                        <strong>Technician Diagnosis:</strong>
+                        <p class="border p-3 rounded bg-light mt-2">@Model.DiagnosisDetails</p>
+                    </div>
+                }
+
+                @if (Model.RequestReplacement)
+                {
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-exchange-alt"></i>
+                        <strong>Replacement Requested</strong><br>
+                        You have requested a replacement fridge for this fault.
+                        @if (Model.ReplacementApproved.HasValue)
+                        {
+                            if (Model.ReplacementApproved.Value)
+                            {
+                                <span class="badge bg-success ms-2">Approved</span>
+                                <p class="mb-0 mt-2">Your replacement request has been approved! Our team will contact you to arrange delivery.</p>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger ms-2">Not Approved</span>
+                                <p class="mb-0 mt-2">Our team has determined that repair is the best solution for this fault.</p>
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning ms-2">Under Review</span>
+                            <p class="mb-0 mt-2">Your replacement request is being reviewed by our team.</p>
+                        }
+                    </div>
+                }
+
+                <!-- Next Steps -->
+                <div class="mt-4 p-3 bg-light rounded">
+                    <h6><i class="fas fa-question-circle me-2"></i>What happens next?</h6>
+                    <ul class="mb-0">
+                        @if (Model.Status == FaultStatus.Reported)
+                        {
+                            <li>Your report is awaiting assignment to a technician</li>
+                            <li>A technician will be assigned within 24 hours</li>
+                        }
+                        else if (Model.Status == FaultStatus.Diagnosed)
+                        {
+                            <li>A technician has diagnosed the issue</li>
+                            <li>Repair will be scheduled soon</li>
+                        }
+                        else if (Model.Status == FaultStatus.Scheduled && Model.ScheduledDate.HasValue)
+                        {
+                            <li>Repair is scheduled for @Model.ScheduledDate.Value.ToString("MMMM d, yyyy")</li>
+                            <li>Please ensure access to the fridge on that date</li>
+                        }
+                        else if (Model.Status == FaultStatus.InProgress)
+                        {
+                            <li>Technician is currently working on the repair</li>
+                            <li>You will be notified when complete</li>
+                        }
+                        else if (Model.Status == FaultStatus.Resolved || Model.Status == FaultStatus.Closed)
+                        {
+                            <li>This fault has been successfully resolved</li>
+                            <li>Thank you for using our service</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(FaultStatus status)
+    {
+        return status switch
+        {
+            FaultStatus.Reported => "bg-secondary",
+            FaultStatus.Diagnosed => "bg-info",
+            FaultStatus.Scheduled => "bg-primary",
+            FaultStatus.InProgress => "bg-warning",
+            FaultStatus.Resolved => "bg-success",
+            FaultStatus.Closed => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+}

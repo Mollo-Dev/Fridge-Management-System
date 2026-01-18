@@ -1,0 +1,88 @@
+﻿@model Fridge
+@{
+    ViewData["Title"] = "Allocate Fridge";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-exchange-alt"></i> @ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Allocate Fridge to Customer</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <strong>Model:</strong> @Model.Model
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Serial Number:</strong> @Model.SerialNumber
+                    </div>
+                </div>
+
+                <form asp-action="Allocate" method="post">
+                    <input type="hidden" name="id" value="@Model.FridgeId" />
+
+                    <div class="mb-3">
+                        <label for="customerId" class="form-label">Select Customer *</label>
+                        <select name="customerId" class="form-select" required>
+                            <option value="">-- Select Customer --</option>
+                            @foreach (var customer in (IEnumerable<SelectListItem>)ViewBag.Customers)
+                            {
+                                <option value="@customer.Value">@customer.Text</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="allocationNotes" class="form-label">Allocation Notes</label>
+                        <textarea name="allocationNotes" class="form-control" rows="3"
+                                  placeholder="Enter any notes about this allocation..."></textarea>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        This will change the fridge status to "Allocated" and assign it to the selected customer.
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Confirm Allocation
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Fridge Details</h5>
+            </div>
+            <div class="card-body">
+                <p>
+                    <strong>Current Status:</strong>
+                    <span class="badge bg-success">@Model.Status</span>
+                </p>
+                <p><strong>Supplier:</strong> @Model.Supplier?.Name</p>
+                <p><strong>Purchase Date:</strong> @Model.PurchaseDate.ToString("yyyy-MM-dd")</p>
+
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="mt-3">
+                        <strong>Notes:</strong>
+                        <p class="small text-muted mt-1">@Model.Notes</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+@model IEnumerable<Supplier>
+@{
+    ViewData["Title"] = "Receive New Stock";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-truck-loading me-2 text-primary"></i>@ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Fridges
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Select Supplier</h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    Please select a supplier to receive new fridges from.
+                </div>
+
+                <form asp-action="ReceiveNew" method="post">
+                    <div class="mb-3">
+                        <label for="supplierId" class="form-label">Supplier *</label>
+                        <select name="supplierId" id="supplierId" class="form-select" required>
+                            <option value="">-- Select a Supplier --</option>
+                            @foreach (var supplier in ViewBag.Suppliers as SelectList)
+                            {
+                                <option value="@supplier.Value">@supplier.Text</option>
+                            }
+                        </select>
+                        <div class="form-text">Choose the supplier you're receiving fridges from.</div>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Index" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-arrow-right"></i> Continue
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Process Overview</h5>
+            </div>
+            <div class="card-body">
+                <h6>Steps:</h6>
+                <ol class="small">
+                    <li>Select supplier</li>
+                    <li>Enter fridge details</li>
+                    <li>Specify quantity</li>
+                    <li>Review and confirm</li>
+                </ol>
+
+                <div class="mt-3 p-3 bg-light rounded">
+                    <h6>What happens next:</h6>
+                    <ul class="small mb-0">
+                        <li>Fridges marked as "Available"</li>
+                        <li>Serial numbers auto-generated</li>
+                        <li>Allocation history recorded</li>
+                        <li>Stock levels updated</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

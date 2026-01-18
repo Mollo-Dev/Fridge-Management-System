@@ -1,0 +1,452 @@
+﻿@model GRP_03_27.Models.FaultReport
+@using GRP_03_27.Enums
+@{
+    ViewData["Title"] = "Fault Report Details";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-exclamation-triangle text-warning me-2"></i>Fault Report #@Model.FaultReportId
+        </h1>
+        <div>
+            <a asp-action="Index" class="btn btn-secondary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">Back to List</span>
+            </a>
+            @if (User.IsInRole("FaultTechnician") || User.IsInRole("Administrator"))
+            {
+                <a asp-action="Update" asp-route-id="@Model.FaultReportId" class="btn btn-warning btn-icon-split ml-2">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-edit"></i>
+                    </span>
+                    <span class="text">Update</span>
+                </a>
+            }
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Information Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                    <h6 class="m-0 font-weight-bold text-primary">Fault Report Information</h6>
+                    <div>
+                        @{
+                            var statusBadgeClass = Model.Status.ToString() switch
+                            {
+                                "Reported" => "badge-warning",
+                                "Diagnosed" => "badge-info",
+                                "Scheduled" => "badge-primary",
+                                "InProgress" => "badge-secondary",
+                                "Resolved" => "badge-success",
+                                "Closed" => "badge-dark",
+                                _ => "badge-secondary"
+                            };
+                        }
+                        <span class="badge @statusBadgeClass">@Model.Status.ToString()</span>
+                        @if (Model.IsOverdue)
+                        {
+                            <span class="badge badge-danger">Overdue</span>
+                        }
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Report ID:</dt>
+                                <dd class="col-sm-8">@Model.FaultReportId</dd>
+
+                                <dt class="col-sm-4">Date Reported:</dt>
+                                <dd class="col-sm-8">@Model.DateReported.ToString("MMM dd, yyyy HH:mm")</dd>
+
+                                <dt class="col-sm-4">Customer:</dt>
+                                <dd class="col-sm-8">@Model.Customer?.BusinessName</dd>
+
+                                <dt class="col-sm-4">Fridge:</dt>
+                                <dd class="col-sm-8">@Model.Fridge?.Model (SN: @Model.Fridge?.SerialNumber)</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-4">Priority:</dt>
+                                <dd class="col-sm-8">
+                                    @{
+                                        var priorityBadgeClass = Model.Priority.ToString() switch
+                                        {
+                                            "High" => "badge-danger",
+                                            "Medium" => "badge-warning",
+                                            "Low" => "badge-info",
+                                            _ => "badge-secondary"
+                                        };
+                                    }
+                                    <span class="badge @priorityBadgeClass">@Model.Priority.ToString()</span>
+                                </dd>
+
+                                <dt class="col-sm-4">Assigned Technician:</dt>
+                                <dd class="col-sm-8">
+                                    @if (Model.AssignedTechnician != null)
+                                    {
+                                        @Model.AssignedTechnician.FirstName @Model.AssignedTechnician.LastName
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Unassigned</span>
+                                    }
+                                </dd>
+
+                                <dt class="col-sm-4">Scheduled Date:</dt>
+                                <dd class="col-sm-8">@(Model.ScheduledDate?.ToString("MMM dd, yyyy") ?? "Not scheduled")</dd>
+
+                                <dt class="col-sm-4">Repair Date:</dt>
+                                <dd class="col-sm-8">@(Model.RepairDate?.ToString("MMM dd, yyyy") ?? "Not completed")</dd>
+                            </dl>
+                        </div>
+                    </div>
+
+                    <!-- Fault Description -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6 class="font-weight-bold">Fault Description</h6>
+                            <div class="border rounded p-3 bg-light">
+                                <p class="mb-0">@Model.Description</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Notes -->
+                    @if (!string.IsNullOrEmpty(Model.CustomerNotes))
+                    {
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h6 class="font-weight-bold">Customer Notes</h6>
+                                <div class="border rounded p-3 bg-light">
+                                    <p class="mb-0">@Model.CustomerNotes</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Diagnosis Details -->
+                    @if (!string.IsNullOrEmpty(Model.DiagnosisDetails))
+                    {
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h6 class="font-weight-bold">Diagnosis Details</h6>
+                                <div class="border rounded p-3 bg-light">
+                                    <p class="mb-0">@Model.DiagnosisDetails</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Parts Required -->
+                    @if (!string.IsNullOrEmpty(Model.PartsRequired))
+                    {
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h6 class="font-weight-bold">Parts Required</h6>
+                                <div class="border rounded p-3 bg-light">
+                                    <p class="mb-0">@Model.PartsRequired</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Repair Cost -->
+                    @if (Model.RepairCost.HasValue)
+                    {
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <h6 class="font-weight-bold">Estimated Repair Cost</h6>
+                                <div class="border rounded p-3 bg-light">
+                                    <p class="mb-0 font-weight-bold text-success">R @Model.RepairCost.Value.ToString("F2")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Internal Notes (Technicians only) -->
+                    @if (!string.IsNullOrEmpty(Model.InternalNotes) && (User.IsInRole("FaultTechnician") || User.IsInRole("Administrator")))
+                    {
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <h6 class="font-weight-bold">Internal Notes</h6>
+                                <div class="border rounded p-3 bg-light">
+                                    <p class="mb-0">@Model.InternalNotes</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Replacement Request -->
+                    @if (Model.RequestReplacement)
+                    {
+                        <div class="row mt-4">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    <i class="fas fa-exchange-alt me-2"></i>
+                                    <strong>Replacement Request:</strong> Customer has requested a replacement fridge.
+                                    @if (Model.ReplacementApproved.HasValue)
+                                    {
+                                        @if (Model.ReplacementApproved.Value)
+                                        {
+                                            <span class="badge badge-success ml-2">Approved</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-danger ml-2">Not Approved</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning ml-2">Pending Review</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Actions Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        @if (User.IsInRole("FaultTechnician") || User.IsInRole("Administrator"))
+                        {
+                            @if (string.IsNullOrEmpty(Model.AssignedTechnicianId))
+                            {
+                                <form asp-action="AssignToMe" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@Model.FaultReportId" />
+                                    <button type="submit" class="btn btn-primary btn-block">
+                                        <i class="fas fa-user-plus me-2"></i>Assign to Me
+                                    </button>
+                                </form>
+                            }
+
+                            @if (Model.Status == FaultStatus.Reported || Model.Status == FaultStatus.Diagnosed)
+                            {
+                                <a asp-action="Diagnose" asp-route-id="@Model.FaultReportId" class="btn btn-info btn-block">
+                                    <i class="fas fa-stethoscope me-2"></i>Diagnose Fault
+                                </a>
+                            }
+
+                            @if (Model.Status == FaultStatus.Diagnosed)
+                            {
+                                <button type="button" class="btn btn-warning btn-block" data-bs-toggle="modal" data-bs-target="#scheduleModal">
+                                    <i class="fas fa-calendar-alt me-2"></i>Schedule Repair
+                                </button>
+                            }
+
+                            @if (Model.Status == FaultStatus.Scheduled)
+                            {
+                                <form asp-action="StartRepair" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@Model.FaultReportId" />
+                                    <button type="submit" class="btn btn-secondary btn-block">
+                                        <i class="fas fa-play me-2"></i>Start Repair
+                                    </button>
+                                </form>
+                            }
+
+                            @if (Model.Status == FaultStatus.InProgress)
+                            {
+                                <button type="button" class="btn btn-success btn-block" data-bs-toggle="modal" data-bs-target="#completeModal">
+                                    <i class="fas fa-check-circle me-2"></i>Complete Repair
+                                </button>
+                            }
+                        }
+
+                        <a href="@Url.Action("Details", "Fridges", new { id = Model.FridgeId })" class="btn btn-outline-info btn-block">
+                            <i class="fas fa-refrigerator me-2"></i>View Fridge Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timeline Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Status Timeline</h6>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item completed">
+                            <div class="timeline-marker"></div>
+                            <div class="timeline-content">
+                                <h6 class="font-weight-bold">Reported</h6>
+                                <p class="text-muted small">@Model.DateReported.ToString("MMM dd, yyyy HH:mm")</p>
+                            </div>
+                        </div>
+
+                        @if (Model.Status == FaultStatus.Diagnosed || Model.Status == FaultStatus.Scheduled || Model.Status == FaultStatus.InProgress || Model.Status == FaultStatus.Resolved || Model.Status == FaultStatus.Closed)
+                        {
+                            <div class="timeline-item @(Model.Status == FaultStatus.Diagnosed ? "active" : "completed")">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h6 class="font-weight-bold">Diagnosed</h6>
+                                    <p class="text-muted small">@Model.AssignedTechnician?.FirstName @Model.AssignedTechnician?.LastName</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.ScheduledDate.HasValue)
+                        {
+                            <div class="timeline-item @(Model.Status == FaultStatus.Scheduled ? "active" : (Model.Status == FaultStatus.InProgress || Model.Status == FaultStatus.Resolved || Model.Status == FaultStatus.Closed ? "completed" : ""))">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h6 class="font-weight-bold">Scheduled</h6>
+                                    <p class="text-muted small">@Model.ScheduledDate.Value.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.Status == FaultStatus.InProgress || Model.Status == FaultStatus.Resolved || Model.Status == FaultStatus.Closed)
+                        {
+                            <div class="timeline-item @(Model.Status == FaultStatus.InProgress ? "active" : "completed")">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h6 class="font-weight-bold">In Progress</h6>
+                                    <p class="text-muted small">Repair work started</p>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.Status == FaultStatus.Resolved || Model.Status == FaultStatus.Closed)
+                        {
+                            <div class="timeline-item completed">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <h6 class="font-weight-bold">Resolved</h6>
+                                    <p class="text-muted small">@Model.RepairDate?.ToString("MMM dd, yyyy")</p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Repair Modal -->
+<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="scheduleModalLabel">Schedule Repair</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="ScheduleRepair" method="post">
+                <input type="hidden" name="id" value="@Model.FaultReportId" />
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="scheduledDate" class="form-label">Repair Date</label>
+                        <input type="date" name="scheduledDate" class="form-control" 
+                               min="@DateTime.UtcNow.ToString("yyyy-MM-dd")" required />
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="customerNotes" class="form-label">Customer Notes (Optional)</label>
+                        <textarea name="customerNotes" class="form-control" rows="3" 
+                                  placeholder="Any additional notes for the customer..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning">Schedule Repair</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Complete Repair Modal -->
+<div class="modal fade" id="completeModal" tabindex="-1" aria-labelledby="completeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="completeModalLabel">Complete Repair</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form asp-action="CompleteRepair" method="post">
+                <input type="hidden" name="id" value="@Model.FaultReportId" />
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <label for="repairNotes" class="form-label">Repair Notes</label>
+                        <textarea name="repairNotes" class="form-control" rows="4" 
+                                  placeholder="Describe what was repaired and any final notes..."></textarea>
+                    </div>
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Completing the repair will mark the fridge as operational and notify the customer.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Complete Repair</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 30px;
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -30px;
+        top: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: #e74a3b;
+        border: 3px solid #fff;
+    }
+
+    .timeline-item.active .timeline-marker {
+        background-color: #f6c23e;
+    }
+
+    .timeline-item.completed .timeline-marker {
+        background-color: #1cc88a;
+    }
+
+    .timeline-content {
+        padding-bottom: 10px;
+    }
+</style>

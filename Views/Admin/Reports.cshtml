@@ -1,0 +1,127 @@
+@{
+    ViewData["Title"] = "Advanced Reports";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-graph-up"></i> @ViewData["Title"]</h1>
+        <div>
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Report Cards -->
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-people display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Customer Reports</h5>
+                    <p class="card-text">Generate comprehensive customer analytics and reports.</p>
+                    <button class="btn btn-primary" disabled>
+                        <i class="bi bi-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-refrigerator display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Fridge Analytics</h5>
+                    <p class="card-text">Analyze fridge performance, allocation, and maintenance patterns.</p>
+                    <button class="btn btn-success" disabled>
+                        <i class="bi bi-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-exclamation-triangle display-4 text-warning mb-3"></i>
+                    <h5 class="card-title">Fault Analysis</h5>
+                    <p class="card-text">Detailed fault report analysis and trend identification.</p>
+                    <button class="btn btn-warning" disabled>
+                        <i class="bi bi-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-tools display-4 text-info mb-3"></i>
+                    <h5 class="card-title">Maintenance Reports</h5>
+                    <p class="card-text">Maintenance scheduling, completion rates, and technician performance.</p>
+                    <button class="btn btn-info" disabled>
+                        <i class="bi bi-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-truck display-4 text-secondary mb-3"></i>
+                    <h5 class="card-title">Supplier Reports</h5>
+                    <p class="card-text">Supplier performance, delivery tracking, and purchase analysis.</p>
+                    <button class="btn btn-secondary" disabled>
+                        <i class="bi bi-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-bar-chart display-4 text-danger mb-3"></i>
+                    <h5 class="card-title">Financial Reports</h5>
+                    <p class="card-text">Revenue analysis, cost tracking, and financial performance metrics.</p>
+                    <button class="btn btn-danger" disabled>
+                        <i class="bi bi-download"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-speedometer2"></i> Quick Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h3 class="text-primary">@ViewBag.TotalCustomers</h3>
+                            <p class="text-muted">Total Customers</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-success">@ViewBag.TotalFridges</h3>
+                            <p class="text-muted">Total Fridges</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-warning">@ViewBag.ActiveFaults</h3>
+                            <p class="text-muted">Active Faults</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-info">@ViewBag.ScheduledMaintenance</h3>
+                            <p class="text-muted">Scheduled Maintenance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

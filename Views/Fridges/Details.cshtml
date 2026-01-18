@@ -1,0 +1,170 @@
+﻿@model Fridge
+@using GRP_03_27.Enums
+
+@{
+    ViewData["Title"] = "Fridge Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-refrigerator"></i> @ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Basic Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Model:</dt>
+                    <dd class="col-sm-8">@Model.Model</dd>
+
+                    <dt class="col-sm-4">Serial Number:</dt>
+                    <dd class="col-sm-8">@Model.SerialNumber</dd>
+
+                    <dt class="col-sm-4">Status:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @GetStatusBadgeClass(Model.Status)">@Model.Status</span>
+                    </dd>
+
+                    <dt class="col-sm-4">Supplier:</dt>
+                    <dd class="col-sm-8">@Model.Supplier?.Name</dd>
+
+                    <dt class="col-sm-4">Purchase Date:</dt>
+                    <dd class="col-sm-8">@Model.PurchaseDate.ToString("yyyy-MM-dd")</dd>
+
+                    <dt class="col-sm-4">Customer:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.Customer != null)
+                        {
+                            @Model.Customer.BusinessName
+                        }
+                        else
+                        {
+                            <span class="text-muted">Not allocated</span>
+                        }
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Allocation History</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.AllocationHistories?.Any() == true)
+                {
+                    <div class="timeline">
+                        @foreach (var history in Model.AllocationHistories.OrderByDescending(h => h.ActionDate))
+                        {
+                            <div class="timeline-item mb-3">
+                                <div class="timeline-marker bg-@GetActionColor(history.Action)"></div>
+                                <div class="timeline-content">
+                                    <h6 class="mb-1">@history.Action</h6>
+                                    <p class="text-muted mb-1 small">
+                                        @history.ActionDate.ToString("yyyy-MM-dd HH:mm") by
+                                        @history.ActionBy?.FullName
+                                    </p>
+                                    @if (!string.IsNullOrEmpty(history.Notes))
+                                    {
+                                        <p class="mb-0">@history.Notes</p>
+                                    }
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No allocation history available.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.Notes))
+{
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Notes</h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-0">@Model.Notes</p>
+        </div>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-action="Edit" asp-route-id="@Model.FridgeId" class="btn btn-warning">
+        <i class="fas fa-edit"></i> Edit
+    </a>
+    @if (Model.Status != FridgeStatus.Scrapped)
+    {
+        <a asp-action="Allocate" asp-route-id="@Model.FridgeId" class="btn btn-primary">
+            <i class="fas fa-exchange-alt"></i> Allocate
+        </a>
+        <a asp-action="Scrap" asp-route-id="@Model.FridgeId" class="btn btn-danger">
+            <i class="fas fa-trash"></i> Scrap
+        </a>
+    }
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-success",
+            FridgeStatus.Allocated => "bg-primary",
+            FridgeStatus.Faulty => "bg-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning",
+            FridgeStatus.Scrapped => "bg-secondary",
+            _ => "bg-secondary"
+        };
+    }
+
+    public string GetActionColor(AllocationAction action)
+    {
+        return action switch
+        {
+            AllocationAction.Received => "success",
+            AllocationAction.Allocated => "primary",
+            AllocationAction.Deallocated => "warning",
+            AllocationAction.Scrapped => "danger",
+            _ => "secondary"
+        };
+    }
+}
+
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .timeline-item {
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .timeline-marker {
+        position: absolute;
+        left: -2rem;
+        top: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 50%;
+    }
+
+    .timeline-content {
+        margin-left: 0;
+    }
+</style>

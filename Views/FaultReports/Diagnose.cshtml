@@ -1,0 +1,251 @@
+@model GRP_03_27.Models.ViewModels.UpdateFaultReportViewModel
+@using GRP_03_27.Enums
+@{
+    ViewData["Title"] = "Diagnose Fault Report";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">
+            <i class="fas fa-stethoscope text-info me-2"></i>Diagnose Fault Report #@Model.FaultReportId
+        </h1>
+        <div>
+            <a asp-action="Details" asp-route-id="@Model.FaultReportId" class="btn btn-secondary btn-icon-split">
+                <span class="icon text-white-50">
+                    <i class="fas fa-arrow-left"></i>
+                </span>
+                <span class="text">Back to Details</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Diagnosis Form</h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Diagnose" method="post">
+                        <input type="hidden" asp-for="FaultReportId" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <!-- Diagnosis Details -->
+                        <div class="form-group mb-4">
+                            <label asp-for="DiagnosisDetails" class="form-label font-weight-bold">
+                                <i class="fas fa-clipboard-list me-1"></i>Diagnosis Details *
+                            </label>
+                            <textarea asp-for="DiagnosisDetails" class="form-control" rows="6" 
+                                      placeholder="Provide detailed diagnosis of the fault, including root cause analysis, affected components, and technical findings..."
+                                      required></textarea>
+                            <span asp-validation-for="DiagnosisDetails" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Include technical details, root cause analysis, and any specific issues found during inspection.
+                            </small>
+                        </div>
+
+                        <!-- Parts Required -->
+                        <div class="form-group mb-4">
+                            <label asp-for="PartsRequired" class="form-label font-weight-bold">
+                                <i class="fas fa-cogs me-1"></i>Parts Required
+                            </label>
+                            <textarea asp-for="PartsRequired" class="form-control" rows="3" 
+                                      placeholder="List all parts/components that need to be replaced or repaired..."></textarea>
+                            <span asp-validation-for="PartsRequired" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Specify part numbers, quantities, and any special requirements.
+                            </small>
+                        </div>
+
+                        <!-- Repair Cost -->
+                        <div class="form-group mb-4">
+                            <label asp-for="RepairCost" class="form-label font-weight-bold">
+                                <i class="fas fa-dollar-sign me-1"></i>Estimated Repair Cost
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">R</span>
+                                <input asp-for="RepairCost" class="form-control" type="number" step="0.01" min="0" 
+                                       placeholder="0.00" />
+                            </div>
+                            <span asp-validation-for="RepairCost" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Include labor costs, parts, and any additional charges.
+                            </small>
+                        </div>
+
+                        <!-- Scheduled Date -->
+                        <div class="form-group mb-4">
+                            <label asp-for="ScheduledDate" class="form-label font-weight-bold">
+                                <i class="fas fa-calendar-alt me-1"></i>Proposed Repair Date
+                            </label>
+                            <input asp-for="ScheduledDate" class="form-control" type="date" 
+                                   min="@DateTime.UtcNow.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="ScheduledDate" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                If provided, the report will move to "Scheduled" status and customer will be notified.
+                            </small>
+                        </div>
+
+                        <!-- Internal Notes -->
+                        <div class="form-group mb-4">
+                            <label asp-for="InternalNotes" class="form-label font-weight-bold">
+                                <i class="fas fa-sticky-note me-1"></i>Internal Notes
+                            </label>
+                            <textarea asp-for="InternalNotes" class="form-control" rows="4" 
+                                      placeholder="Additional notes for internal use (not visible to customer)..."></textarea>
+                            <span asp-validation-for="InternalNotes" class="text-danger"></span>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Include any technical notes, recommendations, or follow-up actions.
+                            </small>
+                        </div>
+
+                        <!-- Assign/Change Technician -->
+                        <div class="form-group mb-4">
+                            <label asp-for="AssignedTechnicianId" class="form-label font-weight-bold">
+                                <i class="fas fa-user-cog me-1"></i>Assign Technician
+                            </label>
+                            <select asp-for="AssignedTechnicianId" class="form-control">
+                                <option value="">-- Unassigned --</option>
+                                @if (Model.AvailableTechnicians != null)
+                                {
+                                    foreach (var tech in Model.AvailableTechnicians)
+                                    {
+                                        <option value="@tech.Id">@tech.FullName</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="AssignedTechnicianId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Replacement Approval -->
+                        <div class="form-group mb-4">
+                            <div class="form-check">
+                                <input asp-for="ReplacementApproved" class="form-check-input" type="checkbox" />
+                                <label asp-for="ReplacementApproved" class="form-check-label font-weight-bold">
+                                    <i class="fas fa-exchange-alt me-1"></i>Approve Replacement Request
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Check this if the customer requested a replacement and you approve it.
+                            </small>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-check me-2"></i>Submit Diagnosis
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.FaultReportId" class="btn btn-secondary btn-lg ms-2">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar with Guidelines -->
+        <div class="col-lg-4">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-info">
+                        <i class="fas fa-lightbulb me-2"></i>Diagnosis Guidelines
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <h6 class="font-weight-bold text-primary">Required Information:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Detailed fault analysis</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Root cause identification</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Technical findings</li>
+                        </ul>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="font-weight-bold text-primary">Optional Information:</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-info text-info me-2"></i>Parts and components needed</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Estimated repair cost</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Proposed repair schedule</li>
+                            <li><i class="fas fa-info text-info me-2"></i>Internal technical notes</li>
+                        </ul>
+                    </div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Note:</strong> If you provide a repair date, the customer will be automatically notified and the status will change to "Scheduled".
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-warning">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Details" asp-route-id="@Model.FaultReportId" class="btn btn-outline-info">
+                            <i class="fas fa-eye me-2"></i>View Full Details
+                        </a>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-list me-2"></i>Back to Reports
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Auto-resize textareas
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = this.scrollHeight + 'px';
+            });
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const diagnosisDetails = document.querySelector('textarea[name="DiagnosisDetails"]').value.trim();
+            
+            if (diagnosisDetails.length < 50) {
+                e.preventDefault();
+                alert('Please provide a more detailed diagnosis (minimum 50 characters).');
+                return false;
+            }
+        });
+    </script>
+}

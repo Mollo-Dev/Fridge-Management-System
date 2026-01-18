@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "System Health";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-heartbeat"></i> @ViewData["Title"]</h1>
+        <div>
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- System Status Cards -->
+    <div class="row">
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Database</h5>
+                    <p class="card-text">Connected</p>
+                    <span class="badge bg-success">Healthy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Authentication</h5>
+                    <p class="card-text">Active</p>
+                    <span class="badge bg-success">Healthy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle display-4 text-success mb-3"></i>
+                    <h5 class="card-title">File System</h5>
+                    <p class="card-text">Accessible</p>
+                    <span class="badge bg-success">Healthy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+            <div class="card border-success">
+                <div class="card-body text-center">
+                    <i class="bi bi-check-circle display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Network</h5>
+                    <p class="card-text">Connected</p>
+                    <span class="badge bg-success">Healthy</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> System Information</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td><strong>Application Version:</strong></td>
+                            <td>1.0.0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Framework:</strong></td>
+                            <td>.NET 8.0</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Server Time:</strong></td>
+                            <td>@DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Environment:</strong></td>
+                            <td>Development</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-graph-up"></i> Performance Metrics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h3 class="text-primary">98%</h3>
+                            <p class="text-muted">Uptime</p>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="text-success">45ms</h3>
+                            <p class="text-muted">Avg Response</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

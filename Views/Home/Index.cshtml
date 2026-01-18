@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/index.css" asp-append-version="true" />
+}
+
+<!-- Hero Section -->
+<div class="container-fluid hero-header text-center text-lg-start position-relative overflow-hidden">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start">
+                <h1 class="display-3 fw-bold text-dark">
+                    Efficient <span class="text-primary">Fridge Management</span> for Your Business
+                </h1>
+                <p class="lead mb-4">
+                    Track fridges, monitor maintenance, and manage customer records in one simple system.
+                </p>
+                <div class="hero-buttons d-flex justify-content-center justify-content-lg-start gap-3">
+                    <!-- Learn More scrolls to Features section -->
+                    <a href="#features" class="btn btn-primary btn-lg shadow-lg">
+                        <i class="fa fa-info-circle me-2"></i>Learn More
+                    </a>
+                    <!-- Get Started goes to Register page -->
+                    <a href="@Url.Action("Register", "Account")" class="btn btn-outline-primary btn-lg shadow-lg">
+                        <i class="fa fa-user-plus me-2"></i>Get Started
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center mt-4 mt-lg-0">
+                <img src="~/Images/img1.jpeg" class="img-fluid rounded shadow-lg" alt="Fridge Management System" loading="lazy">
+            </div>
+        </div>
+    </div>
+    <div class="hero-overlay position-absolute w-100 h-100 top-0 start-0" style="background: rgba(0,0,0,0.05);"></div>
+</div>
+
+<!-- Features Section -->
+<div class="container-fluid py-5 bg-light" id="features">
+    <div class="container text-center mb-5">
+        <h2 class="fw-bold text-primary">Our Key Features</h2>
+        <p class="text-dark">Everything you need to manage fridges, maintenance, and customers efficiently.</p>
+    </div>
+    <div class="row g-4 text-center">
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-item p-4 rounded shadow-sm bg-white">
+                <i class="fa fa-warehouse fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold">Fridge Tracking</h5>
+                <p>Record all fridges, track their locations, and assign them to customers accurately.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-item p-4 rounded shadow-sm bg-white">
+                <i class="fa fa-tools fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold">Maintenance Scheduling</h5>
+                <p>Plan, monitor, and track fridge maintenance tasks performed by technicians.</p>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6">
+            <div class="feature-item p-4 rounded shadow-sm bg-white">
+                <i class="fa fa-users fa-3x text-primary mb-3"></i>
+                <h5 class="fw-bold">Customer Management</h5>
+                <p>Store customer details and delivery info for accurate and organized service.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- System Overview Section -->
+<div class="container-fluid py-5" id="overview">
+    <div class="container text-center mb-5">
+        <h2 class="fw-bold text-primary">System Overview</h2>
+        <p class="text-dark">Our system focuses on three real subsystems that are fully functional.</p>
+    </div>
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-6 text-center">
+            <img src="~/Images/img3.jpg" class="img-fluid rounded shadow-lg" alt="System Overview" loading="lazy">
+        </div>
+        <div class="col-lg-6 text-start">
+            <ul class="list-unstyled">
+                <li class="mb-4 d-flex">
+                    <i class="fa fa-check-circle text-success fa-2x me-3"></i>
+                    <div>
+                        <h5 class="fw-bold">Organized Data Management</h5>
+                        <p>Access structured records for customers, fridges, and maintenance schedules.</p>
+                    </div>
+                </li>
+                <li class="mb-4 d-flex">
+                    <i class="fa fa-check-circle text-success fa-2x me-3"></i>
+                    <div>
+                        <h5 class="fw-bold">Simplified Maintenance Tracking</h5>
+                        <p>Monitor fridge faults and completed maintenance tasks in one place.</p>
+                    </div>
+                </li>
+                <li class="mb-4 d-flex">
+                    <i class="fa fa-check-circle text-success fa-2x me-3"></i>
+                    <div>
+                        <h5 class="fw-bold">User Role Access</h5>
+                        <p>Admins, technicians, and customers have access to relevant functions securely.</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="container-fluid py-5 bg-primary text-white text-center">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Start Managing Smarter</h2>
+        <p class="mb-4">Sign up today to use our system for reliable fridge management.</p>
+        <a href="@Url.Action("Register", "Account")" class="btn btn-light btn-lg shadow-lg">
+            <i class="fa fa-user-plus me-2"></i>Create an Account
+        </a>
+    </div>
+</div>

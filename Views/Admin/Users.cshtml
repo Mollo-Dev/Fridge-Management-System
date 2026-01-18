@@ -1,0 +1,172 @@
+@model IEnumerable<dynamic>
+@{
+    ViewData["Title"] = "User Management";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-person-gear"></i> @ViewData["Title"]</h1>
+        <div>
+            <a asp-controller="Admin" asp-action="Roles" class="btn btn-outline-primary">
+                <i class="bi bi-shield-check"></i> Manage Roles
+            </a>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-search"></i> Search & Filter
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-6">
+                    <label for="searchString" class="form-label">Search:</label>
+                    <input type="text" name="searchString" class="form-control" placeholder="Name, email, employee ID..." value="@ViewBag.SearchString">
+                </div>
+                <div class="col-md-3">
+                    <label for="roleFilter" class="form-label">Role:</label>
+                    <select name="roleFilter" class="form-select">
+                        <option value="">All Roles</option>
+                        @if (ViewBag.AvailableRoles != null)
+                        {
+                            @foreach (var role in ViewBag.AvailableRoles)
+                            {
+                                <option value="@role.Name" selected="@(ViewBag.RoleFilter == role.Name)">@role.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="pageSize" class="form-label">Page Size:</label>
+                    <select name="pageSize" class="form-select">
+                        <option value="10" selected="@(ViewBag.PageSize == 10)">10</option>
+                        <option value="25" selected="@(ViewBag.PageSize == 25)">25</option>
+                        <option value="50" selected="@(ViewBag.PageSize == 50)">50</option>
+                    </select>
+                </div>
+                <div class="col-md-1 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Users (@ViewBag.TotalCount)</h5>
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav>
+                    <ul class="pagination pagination-sm mb-0">
+                        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" href="?page=@i&pageSize=@ViewBag.PageSize&searchString=@ViewBag.SearchString&roleFilter=@ViewBag.RoleFilter">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div>
+        <div class="card-body">
+            @if (Model != null && Model.Count() > 0)
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Employee ID</th>
+                                <th>Roles</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var userData in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <strong>@userData.User.FirstName @userData.User.LastName</strong>
+                                        @if (!string.IsNullOrEmpty(userData.User.Specialization))
+                                        {
+                                            <br>
+                                            <small class="text-muted">@userData.User.Specialization</small>
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="mailto:@userData.User.Email" class="text-decoration-none">
+                                            @userData.User.Email
+                                        </a>
+                                    </td>
+                                    <td>@userData.User.EmployeeId</td>
+                                    <td>
+                                        @if (userData.Roles != null && userData.Roles.Count > 0)
+                                        {
+                                            @foreach (var role in userData.Roles)
+                                            {
+                                                <span class="badge bg-primary me-1">@role</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">No roles assigned</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (userData.User.IsActive)
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            @if (userData.User.IsActive)
+                                            {
+                                                <form method="post" asp-action="ToggleUserStatus" class="d-inline">
+                                                    <input type="hidden" name="userId" value="@userData.User.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning" title="Deactivate User">
+                                                        <i class="bi bi-person-x"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-action="ToggleUserStatus" class="d-inline">
+                                                    <input type="hidden" name="userId" value="@userData.User.Id" />
+                                                    <button type="submit" class="btn btn-sm btn-outline-success" title="Activate User">
+                                                        <i class="bi bi-person-check"></i>
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-person-gear display-1 text-muted"></i>
+                    <h4 class="text-muted mt-3">No Users Found</h4>
+                    <p class="text-muted">No users match your search criteria.</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

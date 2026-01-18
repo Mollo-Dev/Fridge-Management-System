@@ -1,0 +1,173 @@
+﻿@model GRP_03_27.Models.NewFridgeRequest
+@{
+    ViewData["Title"] = "Request New Fridge";
+    Layout = "_CustomerLayout";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-plus-circle me-2"></i>@ViewData["Title"]
+                </h3>
+            </div>
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Error:</strong> @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                @if (!ViewData.ModelState.IsValid)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Validation Errors:</strong>
+                        <ul class="mb-0">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                
+                @if (TempData["WarningMessage"] != null)
+                {
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Warning:</strong> @TempData["WarningMessage"]
+                    </div>
+                }
+
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>New Fridge Request</strong><br>
+                    Use this form to request additional fridges for your business. Our team will review your request
+                    and contact you to discuss your requirements and arrange delivery.
+                </div>
+
+                <form asp-action="RequestNewFridge" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="form-group mb-3">
+                        <label asp-for="Quantity" class="form-label">Quantity Needed</label>
+                        <select asp-for="Quantity" class="form-control" required>
+                            <option value="1">1 Fridge</option>
+                            <option value="2">2 Fridges</option>
+                            <option value="3">3 Fridges</option>
+                            <option value="4">4 Fridges</option>
+                            <option value="5">5 Fridges</option>
+                            <option value="6">6 Fridges</option>
+                            <option value="7">7 Fridges</option>
+                            <option value="8">8 Fridges</option>
+                            <option value="9">9 Fridges</option>
+                            <option value="10">10 Fridges</option>
+                            <option value="15">15 Fridges</option>
+                            <option value="20">20 Fridges</option>
+                            <option value="25">25 Fridges</option>
+                            <option value="30">30 Fridges</option>
+                            <option value="40">40 Fridges</option>
+                            <option value="50">50 Fridges</option>
+                        </select>
+                        <span asp-validation-for="Quantity" class="text-danger"></span>
+                        <small class="form-text text-muted">This helps us understand your capacity needs.</small>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="BusinessJustification" class="form-label">Business Justification *</label>
+                        <textarea asp-for="BusinessJustification" class="form-control" rows="5"
+                                  placeholder="Please explain why you need additional fridges. Include details such as:
+- Business expansion plans
+- Increased customer demand
+- Replacement for old/unreliable fridges
+- New location/store opening
+- Seasonal demand increases
+- Any other relevant business reasons..." 
+                                  minlength="10" maxlength="1000" required></textarea>
+                        <span asp-validation-for="BusinessJustification" class="text-danger"></span>
+                        <small class="form-text text-muted">
+                            <strong>Required:</strong> Please provide at least 10 characters explaining your business need for additional fridges. The more information you provide, the better we can understand and fulfill your request.
+                        </small>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="AdditionalNotes" class="form-label">Additional Notes (Optional)</label>
+                        <textarea asp-for="AdditionalNotes" class="form-control" rows="3"
+                                  placeholder="Any additional information that might help us process your request..."></textarea>
+                        <span asp-validation-for="AdditionalNotes" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-paper-plane"></i> Submit Request
+                        </button>
+                        <a asp-action="Dashboard" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Existing Fridge Information -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-refrigerator me-2"></i>Your Current Fridges
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">
+                    Need help managing your existing fridges?
+                    <a asp-action="MyFridges" class="btn btn-sm btn-outline-primary ms-2">View My Fridges</a>
+                </p>
+                <p class="card-text text-muted small">
+                    Remember: You can also request fridge replacements through the fault reporting system if your existing fridges are faulty.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Client-side validation enhancement
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const businessJustification = document.querySelector('textarea[name="BusinessJustification"]');
+            
+            if (businessJustification) {
+                businessJustification.addEventListener('input', function() {
+                    const length = this.value.length;
+                    const minLength = 10;
+                    const maxLength = 1000;
+                    
+                    // Remove existing validation classes
+                    this.classList.remove('is-valid', 'is-invalid');
+                    
+                    if (length >= minLength && length <= maxLength) {
+                        this.classList.add('is-valid');
+                    } else if (length > 0) {
+                        this.classList.add('is-invalid');
+                    }
+                });
+            }
+            
+            // Form submission validation
+            form.addEventListener('submit', function(e) {
+                const businessJustification = document.querySelector('textarea[name="BusinessJustification"]');
+                if (businessJustification && businessJustification.value.trim().length < 10) {
+                    e.preventDefault();
+                    alert('Please provide at least 10 characters for your business justification.');
+                    businessJustification.focus();
+                    return false;
+                }
+            });
+        });
+    </script>
+}

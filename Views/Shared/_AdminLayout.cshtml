@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Beverage Storage Solutions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" />
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f5f7;
+        }
+
+        /* Header */
+        header {
+            background-color: #0d6efd;
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+            header .logo h5 {
+                margin: 0;
+                font-weight: 700;
+            }
+
+            header input.form-control {
+                border-radius: 50px;
+                padding: 5px 15px;
+                width: 100%;
+                max-width: 600px;
+            }
+            
+            .search-container {
+                position: relative;
+                width: 100%;
+            }
+
+            header .dropdown-toggle::after {
+                display: none;
+            }
+
+        /* Footer */
+        footer {
+            background-color: #0d6efd;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Dashboard Body */
+        main {
+            min-height: 85vh;
+            padding: 30px 15px;
+        }
+
+                /* Cards styling */
+                .dashboard-card {
+                    border-radius: 12px;
+                    padding: 35px 20px;
+                    text-align: center;
+                    transition: all 0.4s ease;
+                    cursor: pointer;
+                    color: #fff;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+                    height: 100%;
+                    min-height: 200px;
+                }
+
+            .dashboard-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 15px 35px rgba(0,0,0,0.18);
+            }
+
+                .card-customers {
+                    background: linear-gradient(135deg, #4facfe, #00f2fe);
+                }
+
+                .card-suppliers {
+                    background: linear-gradient(135deg, #ff9a9e, #fecfef);
+                }
+
+                .card-locations {
+                    background: linear-gradient(135deg, #a8edea, #fed6e3);
+                }
+
+                .card-fridges {
+                    background: linear-gradient(135deg, #ffecd2, #fcb69f);
+                }
+
+                .card-technicians {
+                    background: linear-gradient(135deg, #43e97b, #38f9d7);
+                }
+
+                .card-maintenance {
+                    background: linear-gradient(135deg, #fa709a, #fee140);
+                }
+
+                .card-notifications {
+                    background: linear-gradient(135deg, #667eea, #764ba2);
+                }
+
+                .card-reports {
+                    background: linear-gradient(135deg, #f093fb, #f5576c);
+                }
+
+        .dashboard-card i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .btn-dashboard {
+            border-radius: 50px;
+            padding: 8px 25px;
+            font-weight: 500;
+            border: none;
+            background: rgba(255,255,255,0.9);
+            color: #212529;
+            transition: all 0.3s ease-in-out;
+        }
+
+            .btn-dashboard:hover {
+                background: #fff;
+                transform: scale(1.05);
+            }
+
+        /* Admin specific styling */
+        .admin-nav {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .admin-nav .nav-link {
+            color: #495057;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .admin-nav .nav-link:hover {
+            background-color: #e9ecef;
+            color: #0d6efd;
+        }
+
+        .admin-nav .nav-link.active {
+            background-color: #0d6efd;
+            color: #fff;
+        }
+
+        .admin-stats {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .stat-card h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        /* Live Search Styles */
+        .search-container {
+            position: relative;
+        }
+
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .search-results-header {
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-results-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .search-category-header {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.8rem;
+            color: #495057;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .search-result-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f3f4;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-result-subtitle {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-bottom: 2px;
+        }
+
+        .search-result-description {
+            font-size: 0.8rem;
+            color: #868e96;
+            line-height: 1.3;
+        }
+
+        .search-result-status {
+            margin-left: 12px;
+            flex-shrink: 0;
+        }
+
+        .search-loading {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .search-no-results {
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        /* Search input focus styles */
+        #liveSearchInput:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+        }
+
+        /* Clear button styles */
+        #clearSearchBtn {
+            border-left: none;
+        }
+
+        #clearSearchBtn:hover {
+            background-color: #f8f9fa;
+        }
+
+        @@media (max-width: 768px) {
+            header input.form-control {
+                display: none;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            main {
+                padding: 15px 10px;
+            }
+
+            .search-results-dropdown {
+                max-height: 300px;
+            }
+
+            .search-results-list {
+                max-height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <!-- Logo -->
+        <div class="logo d-flex align-items-center">
+            <img src="~/Images/logo.png" alt="Logo" style="height:40px; margin-right:10px;" onerror="this.style.display='none'">
+            <h5>Beverage Storage Solutions - Admin</h5>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex-grow-1 mx-4 d-none d-md-flex">
+            <div class="search-container w-100">
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" 
+                           id="adminSearchInput" 
+                           class="form-control" 
+                           placeholder="Search customers, fridges, users, fault reports, maintenance records, suppliers..."
+                           autocomplete="off">
+                    <button class="btn btn-outline-secondary" type="button" id="adminClearSearchBtn">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+                
+                <!-- Search Results Dropdown -->
+                <div id="adminSearchResults" class="search-results-dropdown" style="display: none;">
+                    <div class="search-results-header">
+                        <span class="text-muted">Search Results</span>
+                        <span id="adminSearchCount" class="badge bg-primary ms-2">0</span>
+                    </div>
+                    <div id="adminSearchResultsList" class="search-results-list">
+                        <!-- Results will be populated here -->
+                    </div>
+                    <div id="adminSearchLoading" class="search-loading text-center py-3" style="display: none;">
+                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                            <span class="visually-hidden">Searching...</span>
+                        </div>
+                        <span class="ms-2 text-muted">Searching...</span>
+                    </div>
+                    <div id="adminSearchNoResults" class="search-no-results text-center py-4" style="display: none;">
+                        <i class="bi bi-search text-muted" style="font-size: 2rem;"></i>
+                        <p class="text-muted mt-2 mb-0">No results found</p>
+                        <small class="text-muted">Try a different search term</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications + Profile -->
+        <div class="d-flex align-items-center gap-3">
+            <!-- Notifications -->
+            <a href="@Url.Action("Index", "FaultReports")" class="text-white position-relative fs-5">
+                <i class="bi bi-bell"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    12
+                    <span class="visually-hidden">unread notifications</span>
+                </span>
+            </a>
+
+            <!-- Profile / Logout Dropdown -->
+            <div class="dropdown">
+                <a class="text-white dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-person-circle fs-5 me-1"></i> @User.Identity.Name
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="@Url.Action("Dashboard", "Admin")"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                    <li><a class="dropdown-item" href="@Url.Action("SystemHealth", "Admin")"><i class="bi bi-heart-pulse me-2"></i>System Health</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form method="post" asp-controller="Account" asp-action="Logout">
+                            <button type="submit" class="dropdown-item">
+                                <i class="bi bi-box-arrow-right me-2"></i> Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Body -->
+    <main>
+        <!-- Admin Navigation -->
+        <div class="admin-nav">
+            <ul class="nav nav-pills justify-content-center">
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Admin" asp-action="Dashboard">
+                        <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="AdminCustomers" asp-action="Index">
+                        <i class="bi bi-people me-2"></i>Customers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="AdminSuppliers" asp-action="Index">
+                        <i class="bi bi-truck me-2"></i>Suppliers
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="AdminLocations" asp-action="Index">
+                        <i class="bi bi-geo-alt me-2"></i>Locations
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Fridges" asp-action="Index">
+                        <i class="bi bi-refrigerator me-2"></i>Fridges
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Admin" asp-action="Users">
+                        <i class="bi bi-person-gear me-2"></i>Users
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-controller="Admin" asp-action="Reports">
+                        <i class="bi bi-graph-up me-2"></i>Reports
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2025 Beverage Storage Solutions – Proudly developed by The Algorithmics
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Admin Search Functionality -->
+    <script>
+        $(document).ready(function() {
+            let searchTimeout;
+            const searchInput = $('#adminSearchInput');
+            const searchResults = $('#adminSearchResults');
+            const searchResultsList = $('#adminSearchResultsList');
+            const searchLoading = $('#adminSearchLoading');
+            const searchNoResults = $('#adminSearchNoResults');
+            const searchCount = $('#adminSearchCount');
+            const clearSearchBtn = $('#adminClearSearchBtn');
+
+            // Live search functionality
+            searchInput.on('input', function() {
+                const query = $(this).val().trim();
+                
+                // Clear previous timeout
+                clearTimeout(searchTimeout);
+                
+                if (query.length < 2) {
+                    hideSearchResults();
+                    return;
+                }
+
+                // Show loading state
+                showLoadingState();
+
+                // Debounce search requests
+                searchTimeout = setTimeout(() => {
+                    performSearch(query);
+                }, 300);
+            });
+
+            // Clear search functionality
+            clearSearchBtn.on('click', function() {
+                searchInput.val('');
+                hideSearchResults();
+                searchInput.focus();
+            });
+
+            // Hide search results when clicking outside
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.search-container').length) {
+                    hideSearchResults();
+                }
+            });
+
+            // Handle keyboard navigation
+            searchInput.on('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    hideSearchResults();
+                }
+            });
+
+            function performSearch(query) {
+                $.ajax({
+                    url: '@Url.Action("Search", "Admin")',
+                    type: 'GET',
+                    data: { query: query, limit: 10 },
+                    success: function(response) {
+                        displaySearchResults(response);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Search error:', error);
+                        showNoResults();
+                    }
+                });
+            }
+
+            function displaySearchResults(response) {
+                hideLoadingState();
+                
+                if (response.results && response.results.length > 0) {
+                    searchCount.text(response.totalCount);
+                    searchResultsList.empty();
+                    
+                    // Group results by type
+                    const groupedResults = {};
+                    response.results.forEach(result => {
+                        if (!groupedResults[result.type]) {
+                            groupedResults[result.type] = [];
+                        }
+                        groupedResults[result.type].push(result);
+                    });
+
+                    // Display grouped results
+                    Object.keys(groupedResults).forEach(type => {
+                        const typeResults = groupedResults[type];
+                        
+                        // Add category header
+                        const categoryHeader = $(`
+                            <div class="search-category-header">
+                                <i class="bi ${getTypeIcon(type)} me-2"></i>
+                                <strong>${type}</strong>
+                                <span class="badge bg-secondary ms-2">${typeResults.length}</span>
+                            </div>
+                        `);
+                        searchResultsList.append(categoryHeader);
+
+                        // Add results for this category
+                        typeResults.forEach(result => {
+                            const resultItem = $(`
+                                <a href="${result.url}" class="search-result-item">
+                                    <div class="search-result-content">
+                                        <div class="search-result-title">
+                                            <i class="bi ${result.icon} me-2"></i>
+                                            ${result.title}
+                                        </div>
+                                        <div class="search-result-subtitle">${result.subtitle}</div>
+                                        <div class="search-result-description">${result.description}</div>
+                                    </div>
+                                    <div class="search-result-status">
+                                        <span class="badge bg-${result.statusClass}">${result.status}</span>
+                                    </div>
+                                </a>
+                            `);
+                            searchResultsList.append(resultItem);
+                        });
+                    });
+
+                    showSearchResults();
+                } else {
+                    showNoResults();
+                }
+            }
+
+            function getTypeIcon(type) {
+                const iconMap = {
+                    'Customer': 'bi-people',
+                    'Fridge': 'bi-refrigerator',
+                    'User': 'bi-person-gear',
+                    'Fault Report': 'bi-exclamation-triangle',
+                    'Maintenance': 'bi-tools',
+                    'Supplier': 'bi-truck'
+                };
+                return iconMap[type] || 'bi-circle';
+            }
+
+            function showSearchResults() {
+                searchLoading.hide();
+                searchNoResults.hide();
+                searchResults.show();
+            }
+
+            function hideSearchResults() {
+                searchResults.hide();
+                searchLoading.hide();
+                searchNoResults.hide();
+            }
+
+            function showLoadingState() {
+                searchResults.show();
+                searchLoading.show();
+                searchResultsList.hide();
+                searchNoResults.hide();
+            }
+
+            function hideLoadingState() {
+                searchLoading.hide();
+                searchResultsList.show();
+            }
+
+            function showNoResults() {
+                searchLoading.hide();
+                searchResultsList.hide();
+                searchNoResults.show();
+                searchResults.show();
+                searchCount.text('0');
+            }
+        });
+    </script>
+    
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

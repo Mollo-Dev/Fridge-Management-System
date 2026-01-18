@@ -1,0 +1,22 @@
+﻿@model GRP_03_27.Components.CustomerNotificationViewModel
+
+@if (Model.ActiveFaultsCount > 0 || Model.PendingReportsCount > 0)
+{
+    <script>
+        // Update badges dynamically
+        document.addEventListener('DOMContentLoaded', function() {
+            const activeFaultsBadge = document.querySelector('#activeFaultsBadge');
+            const pendingReportsBadge = document.querySelector('#pendingReportsBadge');
+
+            if (activeFaultsBadge && @Model.ActiveFaultsCount > 0) {
+                activeFaultsBadge.textContent = '@Model.ActiveFaultsCount';
+                activeFaultsBadge.style.display = 'inline-block';
+            }
+
+            if (pendingReportsBadge && @Model.PendingReportsCount > 0) {
+                pendingReportsBadge.textContent = '@Model.PendingReportsCount';
+                pendingReportsBadge.style.display = 'inline-block';
+            }
+        });
+    </script>
+}

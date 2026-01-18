@@ -1,0 +1,89 @@
+﻿@model GRP_03_27.Models.ViewModels.ScheduleMaintenanceViewModel
+@{
+    ViewData["Title"] = "Edit Maintenance";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Edit Maintenance</h1>
+        <a asp-action="Details" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-secondary btn-icon-split">
+            <span class="icon text-white-50">
+                <i class="fas fa-arrow-left"></i>
+            </span>
+            <span class="text">Back to Details</span>
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Edit Maintenance Details</h6>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="MaintenanceRecordId" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label asp-for="FridgeId" class="control-label"></label>
+                            <select asp-for="FridgeId" asp-items="Model.AvailableFridges" class="form-control">
+                                <option value="">-- Select Fridge --</option>
+                            </select>
+                            <span asp-validation-for="FridgeId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="AssignedTechnicianId" class="control-label"></label>
+                            <select asp-for="AssignedTechnicianId" asp-items="Model.AvailableTechnicians" class="form-control">
+                                <option value="">-- Select Technician --</option>
+                            </select>
+                            <span asp-validation-for="AssignedTechnicianId" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ScheduledDate" class="control-label"></label>
+                            <input asp-for="ScheduledDate" class="form-control" />
+                            <span asp-validation-for="ScheduledDate" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="MaintenanceType" class="control-label"></label>
+                            <select asp-for="MaintenanceType" asp-items="Html.GetEnumSelectList<GRP_03_27.Enums.MaintenanceType>()" class="form-control"></select>
+                            <span asp-validation-for="MaintenanceType" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="TechnicianNotes" class="control-label"></label>
+                            <textarea asp-for="TechnicianNotes" class="form-control" rows="3" placeholder="Enter maintenance notes..."></textarea>
+                            <span asp-validation-for="TechnicianNotes" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ServiceChecklist" class="control-label"></label>
+                            <textarea asp-for="ServiceChecklist" class="form-control" rows="4" placeholder="Enter service checklist items..."></textarea>
+                            <span asp-validation-for="ServiceChecklist" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-save"></i>
+                                </span>
+                                <span class="text">Update Maintenance</span>
+                            </button>
+                            <a asp-action="Details" asp-route-id="@Model.MaintenanceRecordId" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

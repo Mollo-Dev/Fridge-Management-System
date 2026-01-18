@@ -1,0 +1,236 @@
+﻿@using GRP_03_27.Enums
+@{
+    ViewData["Title"] = "Inventory Analytics";
+    var stats = ViewBag.InventoryStats as dynamic;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-chart-pie me-2 text-info"></i>@ViewData["Title"]</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Fridges
+    </a>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Fridges
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@stats.TotalFridges</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-refrigerator fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Available
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@stats.AvailableFridges</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Allocated
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@stats.AllocatedFridges</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-users fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Under Maintenance
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@stats.UnderMaintenanceFridges</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tools fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Status Distribution Chart -->
+    <div class="col-lg-8">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Fridge Status Distribution</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="statusChart" width="400" height="200"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-success"></i> Available
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> Allocated
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> Maintenance
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> Faulty
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-secondary"></i> Scrapped
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="col-lg-4">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Quick Actions</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="ReceiveNew" class="btn btn-primary btn-block">
+                        <i class="fas fa-truck-loading me-2"></i>Receive New Stock
+                    </a>
+                    <a asp-controller="PurchaseRequests" asp-action="Create" class="btn btn-success btn-block">
+                        <i class="fas fa-plus-circle me-2"></i>New Purchase Request
+                    </a>
+                    <a asp-action="Index" class="btn btn-info btn-block">
+                        <i class="fas fa-list me-2"></i>View All Fridges
+                    </a>
+                </div>
+
+                <!-- Stock Alert -->
+                @if (stats.LowStock)
+                {
+                    <div class="alert alert-warning mt-3">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Low Stock Alert!</strong><br>
+                        Only @stats.AvailableFridges available fridges remaining.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-success mt-3">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Stock Level Good</strong><br>
+                        @stats.AvailableFridges available fridges in inventory.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Status Summary -->
+        <div class="card shadow">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Status Summary</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <span class="badge bg-success me-2">@stats.AvailableFridges</span>
+                    <span>Available for allocation</span>
+                </div>
+                <div class="mb-3">
+                    <span class="badge bg-primary me-2">@stats.AllocatedFridges</span>
+                    <span>Currently allocated</span>
+                </div>
+                <div class="mb-3">
+                    <span class="badge bg-warning me-2">@stats.UnderMaintenanceFridges</span>
+                    <span>Under maintenance</span>
+                </div>
+                <div class="mb-3">
+                    <span class="badge bg-danger me-2">@stats.FaultyFridges</span>
+                    <span>Faulty units</span>
+                </div>
+                <div class="mb-3">
+                    <span class="badge bg-secondary me-2">@stats.ScrappedFridges</span>
+                    <span>Scrapped units</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Pie Chart
+        var ctx = document.getElementById('statusChart').getContext('2d');
+        var statusChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Available', 'Allocated', 'Under Maintenance', 'Faulty', 'Scrapped'],
+                datasets: [{
+                    data: [
+                        @stats.AvailableFridges,
+                        @stats.AllocatedFridges,
+                        @stats.UnderMaintenanceFridges,
+                        @stats.FaultyFridges,
+                        @stats.ScrappedFridges
+                    ],
+                    backgroundColor: [
+                        '#1cc88a', '#4e73df', '#f6c23e', '#e74a3b', '#858796'
+                    ],
+                    hoverBackgroundColor: [
+                        '#17a673', '#2e59d9', '#d4a017', '#be2617', '#656768'
+                    ],
+                    hoverBorderColor: "rgba(234, 236, 244, 1)",
+                }],
+            },
+            options: {
+                maintainAspectRatio: false,
+                tooltips: {
+                    backgroundColor: "rgb(255,255,255)",
+                    bodyFontColor: "#858796",
+                    borderColor: '#dddfeb',
+                    borderWidth: 1,
+                    xPadding: 15,
+                    yPadding: 15,
+                    displayColors: false,
+                    caretPadding: 10,
+                },
+                legend: {
+                    display: false
+                },
+                cutoutPercentage: 0,
+            },
+        });
+    </script>
+}

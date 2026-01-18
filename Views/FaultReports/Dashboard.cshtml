@@ -1,0 +1,250 @@
+﻿@model GRP_03_27.Models.ViewModels.FaultReportDashboardViewModel
+@using GRP_03_27.Enums
+
+
+@{
+    ViewData["Title"] = "Fault Reports Dashboard";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h1 class="display-6 mb-4">
+            <i class="fas fa-tachometer-alt"></i> @ViewData["Title"]
+        </h1>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row">
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Reports
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.TotalReports</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Pending
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.PendingReports</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-clock fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            In Progress
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.InProgressReports</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-tools fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Resolved
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.ResolvedReports</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-danger shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                            Overdue
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">@Model.OverdueReports</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-2 col-md-4 mb-4">
+        <div class="card border-left-secondary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                            Resolution Rate
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            @(Model.TotalReports > 0 ? ((Model.ResolvedReports * 100) / Model.TotalReports) : 0)%
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-chart-line fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Recent Reports -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-history me-2"></i>Recent Fault Reports
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.RecentReports.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var report in Model.RecentReports)
+                        {
+                            <a asp-action="Details" asp-route-id="@report.FaultReportId"
+                               class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">@report.Fridge?.Model</h6>
+                                    <small class="text-muted">@report.DateReported.ToString("MMM dd")</small>
+                                </div>
+                                <p class="mb-1">@Truncate(report.Description, 100)</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">@report.Customer?.BusinessName</small>
+                                    <span class="badge @GetStatusBadgeClass(report.Status)">@report.Status</span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No recent fault reports.</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- High Priority Reports -->
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="card-title mb-0 text-dark">
+                    <i class="fas fa-exclamation-circle me-2"></i>High Priority Reports
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.HighPriorityReports.Any())
+                {
+                    <div class="list-group">
+                        @foreach (var report in Model.HighPriorityReports)
+                        {
+                            <a asp-action="Details" asp-route-id="@report.FaultReportId"
+                               class="list-group-item list-group-item-action list-group-item-warning">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">
+                                        @report.Fridge?.Model
+                                        @if (report.RequestReplacement)
+                                        {
+                                            <span class="badge bg-danger ms-1">Replacement</span>
+                                        }
+                                    </h6>
+                                    <small class="text-danger fw-bold">@report.DaysSinceReport days</small>
+                                </div>
+                                <p class="mb-1">@Truncate(report.Description, 100)</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <small class="text-muted">@report.Customer?.BusinessName</small>
+                                    <span class="badge @GetStatusBadgeClass(report.Status)">@report.Status</span>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-muted">No high priority reports. Great job!</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <a asp-action="Index" class="btn btn-primary me-2">
+                    <i class="fas fa-list"></i> View All Reports
+                </a>
+                <a asp-action="MyAssigned" class="btn btn-warning me-2">
+                    <i class="fas fa-tasks"></i> My Assigned Reports
+                </a>
+                <a asp-action="Create" class="btn btn-success" style="display: none;">
+                    <i class="fas fa-plus"></i> New Report
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadgeClass(FaultStatus status)
+    {
+        return status switch
+        {
+            FaultStatus.Reported => "bg-secondary",
+            FaultStatus.Diagnosed => "bg-info",
+            FaultStatus.Scheduled => "bg-primary",
+            FaultStatus.InProgress => "bg-warning",
+            FaultStatus.Resolved => "bg-success",
+            FaultStatus.Closed => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+
+    public string Truncate(string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value)) return value;
+        return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
+    }
+}

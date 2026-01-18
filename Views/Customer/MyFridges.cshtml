@@ -1,0 +1,204 @@
+﻿@model IEnumerable<Fridge>
+@using GRP_03_27.Enums;
+
+@{
+    ViewData["Title"] = "My Fridges";
+    Layout = "_CustomerLayout";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-6">
+                <i class="fas fa-refrigerator"></i> @ViewData["Title"]
+            </h1>
+            <div>
+                <a asp-action="ReportFault" class="btn btn-warning me-2">
+                    <i class="fas fa-exclamation-triangle"></i> Report Fault
+                </a>
+                <a asp-action="RequestNewFridge" class="btn btn-success">
+                    <i class="fas fa-plus-circle"></i> Request New Fridge
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <strong>No fridges allocated yet.</strong> You don't have any fridges allocated to your account.
+        <a asp-action="RequestNewFridge" class="alert-link">Request your first fridge</a> or contact customer support.
+    </div>
+}
+else
+{
+    <!-- Statistics -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Fridges</h6>
+                            <h3>@Model.Count()</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-refrigerator fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Active</h6>
+                            <h3>@Model.Count(f => f.Status != FridgeStatus.Scrapped)</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Faulty</h6>
+                            <h3>@Model.Count(f => f.Status == FridgeStatus.Faulty)</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-exclamation-triangle fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Maintenance</h6>
+                            <h3>@Model.Count(f => f.Status == FridgeStatus.UnderMaintenance)</h3>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-tools fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fridges Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-list me-2"></i>All Fridges
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Model</th>
+                            <th>Serial Number</th>
+                            <th>Status</th>
+                            <th>Purchase Date</th>
+                            <th>Age</th>
+                            <th>Active Faults</th>
+                            <th>Last Service</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var fridge in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@fridge.Model</strong>
+                                    <br>
+                                    <small class="text-muted">@fridge.DisplayName</small>
+                                </td>
+                                <td>@fridge.SerialNumber</td>
+                                <td>
+                                    <span class="badge @GetFridgeStatusBadgeClass(fridge.Status)">
+                                        @fridge.Status
+                                    </span>
+                                </td>
+                                <td>@fridge.PurchaseDate.ToString("yyyy-MM-dd")</td>
+                                <td>@fridge.AgeInMonths months</td>
+                                <td>
+                                    @{
+                                        var activeFaults = fridge.FaultReports?.Count(fr =>
+                                        fr.Status != FaultStatus.Resolved && fr.Status != FaultStatus.Closed) ?? 0;
+                                    }
+                                    @if (activeFaults > 0)
+                                    {
+                                        <span class="badge bg-danger">@activeFaults active</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">None</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (fridge.LastServiceDate.HasValue)
+                                    {
+                                        <span>@fridge.LastServiceDate.Value.ToString("yyyy-MM-dd")</span>
+                                        @if (fridge.NextServiceDate.HasValue && fridge.NextServiceDate.Value < DateTime.UtcNow)
+                                        {
+                                            <br>
+                            
+                                            <small class="text-warning">Service overdue</small>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No service</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="FridgeDetails" asp-route-id="@fridge.FridgeId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    @if (fridge.Status != FridgeStatus.Faulty)
+                                    {
+                                        <a asp-action="ReportFault" class="btn btn-sm btn-outline-warning">
+                                            <i class="fas fa-exclamation-triangle"></i> Report Fault
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+@functions {
+    public string GetFridgeStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-secondary",
+            FridgeStatus.Allocated => "bg-success",
+            FridgeStatus.Faulty => "bg-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning",
+            FridgeStatus.Scrapped => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+}

@@ -1,0 +1,411 @@
+﻿@model IEnumerable<Customer>
+@{
+    ViewData["Title"] = "Customer Management";
+}
+
+<style>
+    .transition-fade {
+        transition: all 0.3s ease-in-out;
+    }
+
+        .transition-fade:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 123, 255, 0.04);
+    }
+
+    .fs-7 {
+        font-size: 0.875rem;
+    }
+
+    .fs-8 {
+        font-size: 0.75rem;
+    }
+
+    .rounded-top-3 {
+        border-top-left-radius: 1rem !important;
+        border-top-right-radius: 1rem !important;
+    }
+
+    .rounded-start-2 {
+        border-top-left-radius: 0.5rem !important;
+        border-bottom-left-radius: 0.5rem !important;
+    }
+
+    .rounded-end-2 {
+        border-top-right-radius: 0.5rem !important;
+        border-bottom-right-radius: 0.5rem !important;
+    }
+
+    .bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+</style>
+
+<!-- Enhanced Header Section -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="display-6 fw-bold text-primary mb-2">
+            <i class="fas fa-users me-3"></i>@ViewData["Title"]
+        </h1>
+        <p class="text-muted mb-0 fs-6">
+            <i class="fas fa-info-circle me-1"></i>Manage and monitor all customer accounts and fridge allocations
+        </p>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="bg-primary bg-opacity-10 rounded-3 p-3 border border-primary border-opacity-25">
+            <div class="text-center">
+                <span class="d-block fw-bold text-primary fs-3">@ViewBag.TotalCount</span>
+                <small class="text-muted fs-8">Total Customers</small>
+            </div>
+        </div>
+        <div class="vr d-none d-md-block"></div>
+        <div class="d-none d-md-block">
+            <span class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-25">
+                <i class="fas fa-user-shield me-1"></i>Customer Liaison Access
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced Search and Filter Card -->
+<div class="card shadow-lg border-0 rounded-3 mb-4">
+    <div class="card-header bg-gradient-primary text-white py-3 rounded-top-3">
+        <h5 class="card-title mb-0 fw-semibold">
+            <i class="fas fa-filter me-2"></i>Filter & Search Customers
+        </h5>
+    </div>
+    <div class="card-body">
+        <form method="get" class="row g-3" id="searchForm">
+            <div class="col-xl-4 col-lg-6 col-md-12">
+                <label for="searchString" class="form-label fw-semibold text-dark">
+                    <i class="fas fa-search me-1 text-muted"></i>Search Customers
+                </label>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-white border-end-0">
+                        <i class="fas fa-search text-primary"></i>
+                    </span>
+                    <input type="text" name="searchString" class="form-control border-start-0 ps-0"
+                           placeholder="Business name, contact person, email..."
+                           value="@ViewBag.SearchString"
+                           id="searchInput">
+                    <button type="button" class="btn btn-outline-secondary" id="clearSearch" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <label for="customerType" class="form-label fw-semibold text-dark">
+                    <i class="fas fa-building me-1 text-muted"></i>Business Type
+                </label>
+                <select name="customerType" class="form-select form-select-lg">
+                    <option value="">All Business Types</option>
+                    @foreach (var type in ViewBag.CustomerTypes as SelectList)
+                    {
+                        <option value="@type.Value" selected="@(ViewBag.CustomerType?.ToString() == type.Value)">@type.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-3 col-lg-6 col-md-6">
+                <label for="status" class="form-label fw-semibold text-dark">
+                    <i class="fas fa-circle me-1 text-muted"></i>Account Status
+                </label>
+                <select name="status" class="form-select form-select-lg">
+                    @foreach (var status in ViewBag.StatusOptions as SelectList)
+                    {
+                        <option value="@status.Value" selected="@(ViewBag.Status?.ToString() == status.Value)">@status.Text</option>
+                    }
+                </select>
+            </div>
+            <div class="col-xl-2 col-lg-6 col-md-12 d-flex align-items-end">
+                <div class="d-flex gap-2 w-100">
+                    <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                        <i class="fas fa-filter me-2"></i>Apply
+                    </button>
+                    <a href="?" class="btn btn-outline-secondary btn-lg" title="Reset Filters">
+                        <i class="fas fa-refresh"></i>
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Enhanced Results Summary -->
+@if (ViewBag.TotalCount != null)
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="alert alert-light border-0 rounded-3 d-inline-flex align-items-center py-3 px-4 shadow-sm" role="alert">
+            <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="fas fa-chart-bar text-primary fs-5"></i>
+            </div>
+            <div>
+                <span class="fw-semibold text-dark">Results Summary:</span>
+                <span class="ms-2">
+                    Showing <span class="fw-bold text-primary">@((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1)</span>
+                    to <span class="fw-bold text-primary">@Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalCount)</span>
+                    of <span class="fw-bold text-primary">@ViewBag.TotalCount</span> customers
+                </span>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrEmpty(ViewBag.SearchString) || !string.IsNullOrEmpty(ViewBag.CustomerType?.ToString()) || !string.IsNullOrEmpty(ViewBag.Status?.ToString()))
+        {
+            <div>
+                <a href="?" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-times me-1"></i> Clear All Filters
+                </a>
+            </div>
+        }
+    </div>
+}
+
+<!-- Enhanced Customer Table -->
+<div class="card shadow-lg border-0 rounded-3">
+    <div class="card-header bg-light py-3 rounded-top-3">
+        <h5 class="card-title mb-0 fw-semibold text-dark">
+            <i class="fas fa-list me-2"></i>Customer Directory
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="customersTable">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4 py-3 fw-semibold text-dark">Business Information</th>
+                        <th class="py-3 fw-semibold text-dark">Contact Details</th>
+                        <th class="py-3 fw-semibold text-dark">Business Type</th>
+                        <th class="py-3 fw-semibold text-dark">Fridge Allocation</th>
+                        <th class="py-3 fw-semibold text-dark">Status</th>
+                        <th class="text-end pe-4 py-3 fw-semibold text-dark">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="border-top transition-fade">
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0 bg-primary bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center p-2">
+                                        <i class="fas fa-building text-primary fs-5"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <h6 class="mb-1 fw-semibold text-dark">@Html.DisplayFor(modelItem => item.BusinessName)</h6>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <small class="text-muted">ID: @item.CustomerId</small>
+                                            <small class="text-muted">•</small>
+                                            <small class="text-muted">Registered: @item.RegistrationDate.ToString("MMM dd, yyyy")</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-medium text-dark">@Html.DisplayFor(modelItem => item.ContactPerson)</span>
+                                    <div class="d-flex flex-wrap gap-2 mt-2">
+                                        @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                <i class="fas fa-phone me-1 text-primary"></i>@Html.DisplayFor(modelItem => item.PhoneNumber)
+                                            </span>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.Email))
+                                        {
+                                            <span class="badge bg-light text-dark border">
+                                                <i class="fas fa-envelope me-1 text-primary"></i>@Html.DisplayFor(modelItem => item.Email)
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-info bg-opacity-10 text-info border border-info fs-7">@Html.DisplayFor(modelItem => item.Type)</span>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="text-center me-4">
+                                        <span class="d-block fw-bold text-dark fs-4">@item.Fridges.Count()</span>
+                                        <small class="text-muted fs-8">Total</small>
+                                    </div>
+                                    <div class="vr me-4"></div>
+                                    <div class="text-center">
+                                        <span class="d-block fw-bold text-success fs-4">@item.ActiveFridges</span>
+                                        <small class="text-muted fs-8">Active</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @if (item.IsActive)
+                                {
+                                    <span class="badge bg-success bg-opacity-10 text-success border border-success">
+                                        <i class="fas fa-circle me-1 small"></i>Active
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger">
+                                        <i class="fas fa-circle me-1 small"></i>Inactive
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a asp-action="Details" asp-route-id="@item.CustomerId"
+                                       class="btn btn-outline-primary rounded-start-2"
+                                       title="View Customer Details"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="ManageFridges" asp-route-id="@item.CustomerId"
+                                       class="btn btn-outline-primary"
+                                       title="Manage Fridge Allocations"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top">
+                                        <i class="fas fa-refrigerator"></i>
+                                    </a>
+                                    <a asp-action="AllocationHistory" asp-route-id="@item.CustomerId"
+                                       class="btn btn-outline-primary rounded-end-2"
+                                       title="View Allocation History"
+                                       data-bs-toggle="tooltip"
+                                       data-bs-placement="top">
+                                        <i class="fas fa-history"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Enhanced Empty State -->
+        @if (!Model.Any())
+        {
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-users fa-4x text-muted opacity-50"></i>
+                </div>
+                <h4 class="text-muted fw-semibold mb-3">No customers found</h4>
+                <p class="text-muted mb-4 fs-6">Try adjusting your search criteria or clear the filters to see all customers.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="?" class="btn btn-primary">
+                        <i class="fas fa-refresh me-2"></i> Reset Filters
+                    </a>
+                    <button type="button" class="btn btn-outline-secondary" onclick="clearSearch()">
+                        <i class="fas fa-times me-2"></i> Clear Search
+                    </button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Enhanced Pagination -->
+    @if (ViewBag.TotalPages > 1)
+    {
+        <div class="card-footer bg-white border-0 py-3">
+            <nav aria-label="Customer pagination">
+                <ul class="pagination justify-content-center mb-0">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <li class="page-item">
+                            <a class="page-link rounded-start-2"
+                               href="?page=@(ViewBag.CurrentPage - 1)&searchString=@ViewBag.SearchString&customerType=@ViewBag.CustomerType&status=@ViewBag.Status">
+                                <i class="fas fa-chevron-left me-2"></i> Previous
+                            </a>
+                        </li>
+                    }
+
+                    @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                    {
+                        <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="?page=@i&searchString=@ViewBag.SearchString&customerType=@ViewBag.CustomerType&status=@ViewBag.Status">@i</a>
+                        </li>
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <li class="page-item">
+                            <a class="page-link rounded-end-2"
+                               href="?page=@(ViewBag.CurrentPage + 1)&searchString=@ViewBag.SearchString&customerType=@ViewBag.CustomerType&status=@ViewBag.Status">
+                                Next <i class="fas fa-chevron-right ms-2"></i>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        </div>
+    }
+</div>
+
+<script>
+    // Initialize tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        });
+
+        // Enhanced search functionality
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const searchForm = document.getElementById('searchForm');
+
+        // Show/hide clear button based on search input
+        if (searchInput && clearSearchBtn) {
+            searchInput.addEventListener('input', function() {
+                clearSearchBtn.style.display = this.value ? 'block' : 'none';
+            });
+
+            // Clear search functionality
+            clearSearchBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                clearSearchBtn.style.display = 'none';
+                searchForm.submit();
+            });
+        }
+
+        // Auto-submit form when select changes
+        const selects = searchForm.querySelectorAll('select');
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                searchForm.submit();
+            });
+        });
+
+        // Enhanced row click functionality
+        document.querySelectorAll('#customersTable tbody tr').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't trigger if clicking on buttons or links
+                if (!e.target.closest('a') && !e.target.closest('button')) {
+                    const detailsLink = this.querySelector('a[title="View Customer Details"]');
+                    if (detailsLink) {
+                        detailsLink.click();
+                    }
+                }
+            });
+        });
+
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            var alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                var bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            });
+        }, 5000);
+    });
+
+    function clearSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+        if (searchInput && searchForm) {
+            searchInput.value = '';
+            searchForm.submit();
+        }
+    }
+</script>

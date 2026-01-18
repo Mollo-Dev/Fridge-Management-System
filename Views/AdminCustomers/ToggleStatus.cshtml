@@ -1,0 +1,67 @@
+@model Customer
+@{
+    ViewData["Title"] = "Admin - Toggle Customer Status";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">
+                    <i class="fas fa-toggle-on"></i> Toggle Customer Status
+                </h3>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Warning!</strong> Are you sure you want to @(Model.IsActive ? "deactivate" : "activate") this customer?
+                </div>
+
+                <dl class="row">
+                    <dt class="col-sm-4">Business Name:</dt>
+                    <dd class="col-sm-8">@Model.BusinessName</dd>
+
+                    <dt class="col-sm-4">Contact Person:</dt>
+                    <dd class="col-sm-8">@Model.ContactPerson</dd>
+
+                    <dt class="col-sm-4">Current Status:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-4">New Status:</dt>
+                    <dd class="col-sm-8">
+                        @if (Model.IsActive)
+                        {
+                            <span class="badge bg-danger">Inactive</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Active</span>
+                        }
+                    </dd>
+                </dl>
+
+                <form asp-action="ToggleStatus" method="post">
+                    <input type="hidden" asp-for="CustomerId" />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-@(Model.IsActive ? "danger" : "success")">
+                            <i class="fas fa-toggle-@(Model.IsActive ? "off" : "on")"></i>
+                            @(Model.IsActive ? "Deactivate" : "Activate") Customer
+                        </button>
+                        <a asp-action="Index" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,108 @@
+@model Fridge
+@{
+    ViewData["Title"] = "Receive New Stock";
+    var supplier = ViewBag.Supplier as Supplier;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1><i class="fas fa-truck-loading me-2 text-primary"></i>@ViewData["Title"]</h1>
+    <a asp-action="ReceiveNew" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to Supplier Selection
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Receive Stock from Supplier</h5>
+            </div>
+            <div class="card-body">
+                @if (supplier != null)
+                {
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        Receiving stock from: <strong>@supplier.Name</strong>
+                    </div>
+
+                    <form asp-action="ReceiveNewForm" method="post">
+                        <input type="hidden" name="supplierId" value="@supplier.SupplierId" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="model" class="form-label">Fridge Model *</label>
+                                    <input type="text" class="form-control" id="model" name="model"
+                                           required maxlength="100"
+                                           placeholder="Enter fridge model (e.g., CoolMaster 5000)">
+                                    <div class="form-text">Model name should be 2-100 characters.</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="serialNumber" class="form-label">Base Serial Number *</label>
+                                    <input type="text" class="form-control" id="serialNumber" name="serialNumber"
+                                           required maxlength="45"
+                                           placeholder="Enter base serial number (e.g., CM5000)">
+                                    <div class="form-text">Serial numbers will be auto-generated with suffixes.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity *</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity"
+                                   required min="1" max="100" value="1"
+                                   placeholder="Enter quantity to receive">
+                            <div class="form-text">Quantity must be between 1 and 100 units.</div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>Note:</strong> Each fridge will be assigned a unique serial number by appending a sequential number to the base serial number.
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="ReceiveNew" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-check"></i> Receive Stock
+                            </button>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Supplier information not found. Please select a valid supplier.
+                    </div>
+                    <a asp-action="ReceiveNew" class="btn btn-secondary">Back to Supplier Selection</a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Receiving Information</h5>
+            </div>
+            <div class="card-body">
+                <h6>Process Overview:</h6>
+                <ul class="small">
+                    <li>Fridges will be marked as "Available"</li>
+                    <li>Serial numbers will be auto-generated</li>
+                    <li>Purchase date will be set to today</li>
+                    <li>Allocation history will be recorded</li>
+                    <li>Stock levels will be updated automatically</li>
+                </ul>
+
+                <div class="mt-3 p-3 bg-light rounded">
+                    <h6>Example:</h6>
+                    <p class="small mb-1">Base Serial: <code>CM5000</code></p>
+                    <p class="small mb-0">Generated: <code>CM5000-001, CM5000-002, ...</code></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

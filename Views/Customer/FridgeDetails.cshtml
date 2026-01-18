@@ -1,0 +1,249 @@
+﻿@model Fridge
+@using GRP_03_27.Enums
+
+@{
+    ViewData["Title"] = "Fridge Details";
+    Layout = "_CustomerLayout";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="card-title">Fridge Details</h3>
+                <a asp-action="MyFridges" class="btn btn-secondary btn-sm">Back to List</a>
+            </div>
+            <div class="card-body">
+                <!-- Status Alert -->
+                @if (Model.Status == FridgeStatus.Faulty)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>This fridge is currently faulty.</strong>
+                        <a asp-action="ReportFault" class="alert-link">Report a new fault</a> or check existing reports.
+                    </div>
+                }
+                else if (Model.Status == FridgeStatus.UnderMaintenance)
+                {
+                    <div class="alert alert-warning">
+                        <i class="fas fa-tools"></i>
+                        <strong>This fridge is under maintenance.</strong> It will be available soon.
+                    </div>
+                }
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Basic Information</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Model:</dt>
+                            <dd class="col-sm-8">@Model.Model</dd>
+
+                            <dt class="col-sm-4">Serial Number:</dt>
+                            <dd class="col-sm-8">@Model.SerialNumber</dd>
+
+                            <dt class="col-sm-4">Display Name:</dt>
+                            <dd class="col-sm-8">@Model.DisplayName</dd>
+
+                            <dt class="col-sm-4">Status:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge @GetFridgeStatusBadgeClass(Model.Status)">
+                                    @Model.Status
+                                </span>
+                            </dd>
+
+                            <dt class="col-sm-4">Purchase Date:</dt>
+                            <dd class="col-sm-8">@Model.PurchaseDate.ToString("yyyy-MM-dd")</dd>
+
+                            <dt class="col-sm-4">Age:</dt>
+                            <dd class="col-sm-8">@Model.AgeInMonths months</dd>
+
+                            <dt class="col-sm-4">Last Updated:</dt>
+                            <dd class="col-sm-8">@Model.LastUpdated.ToString("yyyy-MM-dd")</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Service Information</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Total Fault Reports:</dt>
+                            <dd class="col-sm-8">@Model.FaultReports.Count</dd>
+
+                            <dt class="col-sm-4">Active Faults:</dt>
+                            <dd class="col-sm-8">
+                                @{
+                                    var activeFaults = Model.FaultReports.Count(fr =>
+                                    fr.Status != FaultStatus.Resolved && fr.Status != FaultStatus.Closed);
+                                }
+                                @if (activeFaults > 0)
+                                {
+                                    <span class="badge bg-danger">@activeFaults active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success">None</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">Maintenance Records:</dt>
+                            <dd class="col-sm-8">@Model.MaintenanceRecords.Count</dd>
+
+                            <dt class="col-sm-4">Last Service:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.LastServiceDate.HasValue)
+                                {
+                                    <span>@Model.LastServiceDate.Value.ToString("yyyy-MM-dd")</span>
+                                    @if (Model.NextServiceDate.HasValue)
+                                    {
+                                        <br>
+                                        <small>Next: @Model.NextServiceDate.Value.ToString("yyyy-MM-dd")</small>
+                                        @if (Model.NextServiceDate.Value < DateTime.UtcNow)
+                                        {
+                                            <br>
+                                
+                                            <small class="text-warning">Service overdue!</small>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No service records</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h5>Notes</h5>
+                            <div class="border p-3 rounded bg-light">
+                                @Model.Notes
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!-- Action Buttons -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="d-flex gap-2">
+                            @if (Model.Status != FridgeStatus.Faulty && Model.Status != FridgeStatus.Scrapped)
+                            {
+                                <a asp-action="ReportFault" class="btn btn-warning">
+                                    <i class="fas fa-exclamation-triangle"></i> Report Fault
+                                </a>
+                            }
+                            <a asp-action="MyFaultReports" class="btn btn-info">
+                                <i class="fas fa-clipboard-list"></i> View All Fault Reports
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Fault Reports -->
+                @{
+                    var recentFaults = Model.FaultReports.OrderByDescending(fr => fr.DateReported).Take(5).ToList();
+                }
+                @if (recentFaults.Any())
+                {
+                    <div class="mt-4">
+                        <h5>Recent Fault Reports</h5>
+                        <div class="list-group">
+                            @foreach (var fault in recentFaults)
+                            {
+                                <a asp-action="FaultReportDetails" asp-route-id="@fault.FaultReportId"
+                                   class="list-group-item list-group-item-action">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@fault.DateReported.ToString("MMM dd, yyyy")</h6>
+                                        <span class="badge @GetStatusBadgeClass(fault.Status)">@fault.Status</span>
+                                    </div>
+                                    <p class="mb-1">@Truncate(fault.Description, 100)</p>
+                                    <small class="text-muted">
+                                        @if (fault.AssignedTechnician != null)
+                                        {
+                                            <span>Assigned to @fault.AssignedTechnician.FirstName</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Awaiting assignment</span>
+                                        }
+                                    </small>
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Maintenance History -->
+                @{
+                    var recentMaintenance = Model.MaintenanceRecords.OrderByDescending(m => m.ScheduledDate).Take(5).ToList();
+                }
+                @if (recentMaintenance.Any())
+                {
+                    <div class="mt-4">
+                        <h5>Recent Maintenance</h5>
+                        <div class="list-group">
+                            @foreach (var maintenance in recentMaintenance)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex w-100 justify-content-between">
+                                        <h6 class="mb-1">@maintenance.ScheduledDate.ToString("MMM dd, yyyy")</h6>
+                                        <span class="badge bg-info">@maintenance.MaintenanceType</span>
+                                        @if (maintenance.PerformedDate.HasValue)
+                                        {
+                                            <span class="badge bg-success">Completed</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning">Scheduled</span>
+                                        }
+                                    </div>
+                                    <p class="mb-1">@maintenance.TechnicianNotes</p>
+                                    <small class="text-muted">
+                                        Service: @maintenance.ServiceChecklist
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetFridgeStatusBadgeClass(FridgeStatus status)
+    {
+        return status switch
+        {
+            FridgeStatus.Available => "bg-secondary",
+            FridgeStatus.Allocated => "bg-success",
+            FridgeStatus.Faulty => "bg-danger",
+            FridgeStatus.UnderMaintenance => "bg-warning",
+            FridgeStatus.Scrapped => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+
+    public string GetStatusBadgeClass(FaultStatus status)
+    {
+        return status switch
+        {
+            FaultStatus.Reported => "bg-secondary",
+            FaultStatus.Diagnosed => "bg-info",
+            FaultStatus.Scheduled => "bg-primary",
+            FaultStatus.InProgress => "bg-warning",
+            FaultStatus.Resolved => "bg-success",
+            FaultStatus.Closed => "bg-dark",
+            _ => "bg-secondary"
+        };
+    }
+
+    public string Truncate(string value, int maxLength)
+    {
+        if (string.IsNullOrEmpty(value)) return value;
+        return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
+    }
+}

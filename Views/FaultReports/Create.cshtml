@@ -1,0 +1,244 @@
+﻿@model GRP_03_27.Models.ViewModels.CreateFaultReportViewModel
+@using GRP_03_27.Enums;
+
+@{
+    ViewData["Title"] = "Report Fault";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h3 class="card-title text-white">
+                    <i class="fas fa-exclamation-triangle me-2"></i>@ViewData["Title"]
+                </h3>
+            </div>
+            <div class="card-body">
+                @if (TempData["ErrorMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+                    </div>
+                }
+
+                <form asp-action="Create" id="faultReportForm">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Need help?</strong> Describe the issue in detail to help our technicians diagnose the problem quickly.
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="FridgeId" class="form-label fw-bold"></label>
+                        <select asp-for="FridgeId" class="form-select" required>
+                            <option value="">-- Select Your Fridge --</option>
+                            @if (Model.AvailableFridges != null && Model.AvailableFridges.Any())
+                            {
+                                foreach (var fridge in Model.AvailableFridges)
+                                {
+                                    var statusClass = fridge.Status == FridgeStatus.Allocated ? "text-success" :
+                                    fridge.Status == FridgeStatus.Faulty ? "text-danger" : "text-warning";
+                                    <option value="@fridge.FridgeId" data-status="@fridge.Status">
+                                        @fridge.Model (Serial: @fridge.SerialNumber) -
+                                        <span class="@statusClass">@fridge.Status</span>
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="FridgeId" class="text-danger small"></span>
+                        <div class="form-text">Select the fridge that needs repair</div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="Description" class="form-label fw-bold"></label>
+                        <textarea asp-for="Description" class="form-control" rows="5"
+                                  placeholder="Please describe the issue in detail. Include information such as:
+                                    • What sounds or error messages you're hearing/seeing
+                                    • Temperature issues (too warm, too cold, not cooling)
+                                    • When the problem started
+                                    • Any recent changes or incidents
+                                    • Specific error codes if available..."
+                                  required></textarea>
+                        <span asp-validation-for="Description" class="text-danger small"></span>
+                        <div class="form-text">
+                            <i class="fas fa-lightbulb"></i> Detailed descriptions help us resolve issues faster
+                        </div>
+                        <div class="mt-2">
+                            <small class="text-muted" id="charCount">0/1000 characters</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <label asp-for="CustomerNotes" class="form-label">Additional Notes (Optional)</label>
+                        <textarea asp-for="CustomerNotes" class="form-control" rows="3"
+                                  placeholder="Any other information that might help our technicians:
+                                        • Preferred contact times
+                                        • Access instructions to your premises
+                                        • Specific safety requirements
+                                        • Any previous repair attempts..."></textarea>
+                        <span asp-validation-for="CustomerNotes" class="text-danger small"></span>
+                    </div>
+
+                    <div class="form-group mb-4">
+                        <div class="form-check form-switch">
+                            <input asp-for="RequestReplacement" class="form-check-input" type="checkbox" id="replacementCheck">
+                            <label asp-for="RequestReplacement" class="form-check-label fw-bold text-danger" for="replacementCheck">
+                                <i class="fas fa-exchange-alt me-1"></i>Request Replacement Fridge
+                            </label>
+                        </div>
+                        <div class="form-text">
+                            <i class="fas fa-warning text-warning"></i> Only check this if you believe the fridge cannot be repaired and needs complete replacement
+                        </div>
+                    </div>
+
+                    <!-- Replacement Warning Modal -->
+                    <div class="modal fade" id="replacementModal" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-warning">
+                                    <h5 class="modal-title">
+                                        <i class="fas fa-exclamation-triangle"></i> Replacement Request
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p><strong>Are you sure you want to request a replacement?</strong></p>
+                                    <p>Replacement requests should only be made if:</p>
+                                    <ul>
+                                        <li>The fridge is beyond economical repair</li>
+                                        <li>Multiple repair attempts have failed</li>
+                                        <li>The fridge is very old and inefficient</li>
+                                        <li>There are safety concerns</li>
+                                    </ul>
+                                    <p class="text-muted">Our team will assess your request and contact you.</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-warning" id="confirmReplacement">Yes, Request Replacement</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-warning btn-lg w-100">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Fault Report
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary w-100 mt-2">
+                            <i class="fas fa-arrow-left me-2"></i>Back to Reports
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="card mt-4">
+            <div class="card-header bg-light">
+                <h6 class="card-title mb-0">
+                    <i class="fas fa-question-circle me-2"></i>What happens next?
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="text-primary mb-2">
+                            <i class="fas fa-clipboard-list fa-2x"></i>
+                        </div>
+                        <h6>Report Submitted</h6>
+                        <p class="small text-muted">We receive your fault report</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-info mb-2">
+                            <i class="fas fa-user-tie fa-2x"></i>
+                        </div>
+                        <h6>Technician Assigned</h6>
+                        <p class="small text-muted">A technician reviews your report</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-warning mb-2">
+                            <i class="fas fa-tools fa-2x"></i>
+                        </div>
+                        <h6>Diagnosis & Repair</h6>
+                        <p class="small text-muted">Technician diagnoses and fixes the issue</p>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-success mb-2">
+                            <i class="fas fa-check-circle fa-2x"></i>
+                        </div>
+                        <h6>Issue Resolved</h6>
+                        <p class="small text-muted">Your fridge is back in working order</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const descriptionTextarea = document.getElementById('Description');
+            const charCount = document.getElementById('charCount');
+            const replacementCheck = document.getElementById('replacementCheck');
+            const replacementModal = new bootstrap.Modal(document.getElementById('replacementModal'));
+
+            // Character count for description
+            descriptionTextarea.addEventListener('input', function() {
+                const length = this.value.length;
+                charCount.textContent = `${length}/1000 characters`;
+
+                if (length < 10) {
+                    charCount.className = 'text-danger';
+                } else if (length < 50) {
+                    charCount.className = 'text-warning';
+                } else {
+                    charCount.className = 'text-success';
+                }
+            });
+
+            // Trigger character count on load
+            descriptionTextarea.dispatchEvent(new Event('input'));
+
+            // Replacement request confirmation
+            replacementCheck.addEventListener('change', function() {
+                if (this.checked) {
+                    replacementModal.show();
+                }
+            });
+
+            // Confirm replacement
+            document.getElementById('confirmReplacement').addEventListener('click', function() {
+                replacementModal.hide();
+                // Checkbox remains checked
+            });
+
+            // Close modal unchecks the box
+            replacementModal._element.addEventListener('hidden.bs.modal', function() {
+                if (!document.getElementById('confirmReplacement').clicked) {
+                    replacementCheck.checked = false;
+                }
+            });
+
+            // Store confirm button click
+            document.getElementById('confirmReplacement').addEventListener('click', function() {
+                this.clicked = true;
+            });
+
+            // Form validation enhancement
+            document.getElementById('faultReportForm').addEventListener('submit', function(e) {
+                const description = descriptionTextarea.value.trim();
+                if (description.length < 10) {
+                    e.preventDefault();
+                    alert('Please provide a more detailed description (at least 10 characters).');
+                    descriptionTextarea.focus();
+                }
+            });
+        });
+    </script>
+}

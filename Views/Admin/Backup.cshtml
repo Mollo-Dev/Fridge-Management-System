@@ -1,0 +1,71 @@
+@{
+    ViewData["Title"] = "Data Backup";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1><i class="bi bi-database"></i> @ViewData["Title"]</h1>
+        <div>
+            <a asp-controller="Admin" asp-action="Dashboard" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Backup Actions -->
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-download display-4 text-primary mb-3"></i>
+                    <h5 class="card-title">Full Database Backup</h5>
+                    <p class="card-text">Create a complete backup of all system data.</p>
+                    <button class="btn btn-primary" disabled>
+                        <i class="bi bi-download"></i> Create Backup
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-upload display-4 text-success mb-3"></i>
+                    <h5 class="card-title">Restore Database</h5>
+                    <p class="card-text">Restore system from a previous backup.</p>
+                    <button class="btn btn-success" disabled>
+                        <i class="bi bi-upload"></i> Restore
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-check display-4 text-info mb-3"></i>
+                    <h5 class="card-title">Scheduled Backups</h5>
+                    <p class="card-text">Configure automatic backup schedules.</p>
+                    <button class="btn btn-info" disabled>
+                        <i class="bi bi-gear"></i> Configure
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup History -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="bi bi-clock-history"></i> Backup History</h5>
+        </div>
+        <div class="card-body">
+            <div class="text-center py-5">
+                <i class="bi bi-database display-1 text-muted"></i>
+                <h4 class="text-muted mt-3">Backup System Coming Soon</h4>
+                <p class="text-muted">Automated backup and restore functionality will be implemented in a future update.</p>
+            </div>
+        </div>
+    </div>
+</div>
